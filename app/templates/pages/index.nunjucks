@@ -1,0 +1,8 @@
+{% extends "./templates/layout.nunjucks" %}
+{% block content %}
+
+
+  {% include "./templates/partials/testPartial.nunjucks" %}
+
+
+{% endblock %}
