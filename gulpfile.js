@@ -35,15 +35,15 @@ var fileNames = {
 var paths = {
   root: "app/",
   images: {
-    origin:'app/assets/images/**',
+    origin:'app/assets/images/*',
     dest:'app/assets/images',
   },
   fonts: {
-    origin:'app/assets/fonts/**',
-    dest:'dist/assets/fonts',
+    origin:'app/assets/fonts/*',
+    dest:'build/assets/fonts',
   },
   scripts: {
-    all:'app/**/*.js',
+    all:['app/pages/**/*.js', 'app/components/**/*.js', 'app/general/scripts/*.js',],
     index: 'app/' + fileNames.scripts,
   },
   styles: {
@@ -52,14 +52,14 @@ var paths = {
     index: 'app/' + fileNames.styles,
   },
   html: {
-    all: ['app/**.html','app/**/*.nunjucks'],
+    all: ['app/pages/**/*.html', 'app/components/**/*.html','app/**/*.nunjucks'],
     main: 'app/general/html/index.nunjucks',
     index: 'app/' + fileNames.html,
   },
-  dist: {
-    root: 'dist/',
-    scripts: 'dist/scripts',
-    styles: 'dist/styles',
+  build: {
+    root: 'build/',
+    scripts: 'build/',
+    styles: 'build/',
   },
 };
 
@@ -112,7 +112,7 @@ gulp.task(commands.deploy.scripts, function() {
                 //compress :D
                 .pipe(uglify())
                 //where we will store our finalized, compressed script
-                .pipe(gulp.dest(dist.scripts));
+                .pipe(gulp.dest(paths.build.scripts));
 });
 
 gulp.task(commands.lint, function(){
@@ -167,7 +167,7 @@ gulp.task(commands.deploy.styles, function() {
                 // compress
                 .pipe(minifyCSS())
                 //where to save our final, compressed css file
-                .pipe(gulp.dest(dist.styles));
+                .pipe(gulp.dest(paths.build.styles));
 });
 
 
@@ -199,7 +199,7 @@ gulp.task(commands.deploy.html, function() {
     gulp.src(paths.html.index)
         //prevent pipe breaking caused by errors from gulp plugins
         .pipe(plumber())
-        .pipe(gulp.dest(paths.dist.root));
+        .pipe(gulp.dest(paths.build.root));
 });
 
 
@@ -231,35 +231,34 @@ gulp.task(commands.deploy.fonts, function() {
 
 //misc files for deploy
 gulp.task(commands.deploy.misc, function() {
-    gulp.src([paths.root + '*', !(paths.html.index), !(paths.scripts.index), !(paths.styles.index)])
-        //prevent pipe breaking caused by errors from gulp plugins
-        .pipe(plumber())
-        .pipe(gulp.dest(paths.dist.root));
+    // gulp.src([paths.root + '*', !(paths.html.index), !(paths.scripts.index), !(paths.styles.index)])
+    //     //prevent pipe breaking caused by errors from gulp plugins
+    //     .pipe(plumber())
+    //     .pipe(gulp.dest(paths.build.root));
 
     //grab any hidden files too
     gulp.src(paths.root + '.*')
         //prevent pipe breaking caused by errors from gulp plugins
         .pipe(plumber())
-        .pipe(gulp.dest(paths.dist.root));
+        .pipe(gulp.dest(paths.build.root));
 });
 
 
 // GENERAL
-//cleans our dist directory in case things got deleted
+//cleans our build directory in case things got deleted
 gulp.task(commands.clean, function() {
     return shell.task([
-      'rm -rf dist'
+      'rm -rf build'
     ]);
 });
 
 //create folders using shell
 gulp.task(commands.deploy.scaffold, function() {
   return shell.task([
-      'mkdir dist',
-      'mkdir dist/assets/fonts',
-      'mkdir dist/assets/images',
-      'mkdir dist/scripts',
-      'mkdir dist/styles'
+      'mkdir build',
+      'mkdir build/assets',
+      'mkdir build/assets/fonts',
+      'mkdir build/assets/images',
     ]
   );
 });

@@ -6,4 +6,4 @@ let obj = {
 let {yo, hi} = obj;
 
 
-console.log(yo, hi);
+console.log(yo, hi, 'test');

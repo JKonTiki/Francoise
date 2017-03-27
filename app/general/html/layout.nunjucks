@@ -6,8 +6,8 @@
         <title>t s u k a m o r i</title>
         <meta name="description" content="となりのトトロ">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="styles/styles.css">
-        <link rel="shortcut icon" type="image/png" href="https://s-media-cache-ak0.pinimg.com/736x/3c/f9/03/3cf903ecb64790f8b586805932c02e2b.jpg"/>
+        <link rel="stylesheet" href="styles.css">
+        <link rel="shortcut icon" type="image/png" href="./assets/images/me.png"/>
     </head>
     <body>
       {% block content %}
@@ -15,6 +15,6 @@
 
 
       {% endblock %}
-        <script src="scripts/app.js"></script>
+        <script src="scripts.js"></script>
     </body>
 </html>
