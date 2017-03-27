@@ -225,7 +225,7 @@ gulp.task('scaffold', function() {
 //  startup the web server,
 //  start up browserSync
 //  compress all scripts and SCSS files
-gulp.task('default', ['browserSync', 'lint', 'scripts', 'styles'], function() {
+gulp.task('default', ['browserSync', 'lint','nunjucks','scripts', 'styles'], function() {
     //a list of watchers, so it will watch all of the following files waiting for changes
     gulp.watch('app/scripts/js/**', ['scripts']);
     gulp.watch('app/styles/scss/**', ['styles']);
@@ -234,4 +234,4 @@ gulp.task('default', ['browserSync', 'lint', 'scripts', 'styles'], function() {
 });
 
 //this is our deployment task, it will set everything for deployment-ready files
-gulp.task('deploy', gulpSequence('clean', 'scaffold', ['scripts-deploy', 'styles-deploy', 'images-deploy'], 'html-deploy'));
+gulp.task('deploy', gulpSequence('clean', 'scaffold', 'nunjucks', ['scripts-deploy', 'styles-deploy', 'images-deploy'], 'html-deploy'));
