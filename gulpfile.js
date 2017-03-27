@@ -1,20 +1,20 @@
 // get gulp dependencies
-var gulp = require('gulp');
-var gutil = require('gulp-util');
+var autoprefixer = require('gulp-autoprefixer');
+var babel = require("gulp-babel");
+var browserSync = require('browser-sync');
 var concat = require('gulp-concat');
-var uglify = require('gulp-uglify');
+var exec = require('child_process').exec;
+var gulp = require('gulp');
+var gulpSequence = require('gulp-sequence').use(gulp);
+var gutil = require('gulp-util');
+var imagemin = require('gulp-imagemin');
+var jshint = require('gulp-jshint');
+var minifyCSS = require('gulp-minify-css');
+var nunjucksRender = require('gulp-nunjucks-render');
+var plumber = require('gulp-plumber');
 var sass = require('gulp-sass');
 var sourceMaps = require('gulp-sourcemaps');
-var imagemin = require('gulp-imagemin');
-var minifyCSS = require('gulp-minify-css');
-var browserSync = require('browser-sync');
-var autoprefixer = require('gulp-autoprefixer');
-var gulpSequence = require('gulp-sequence').use(gulp);
-var shell = require('gulp-shell');
-var plumber = require('gulp-plumber');
-var babel = require("gulp-babel");
-var jshint = require('gulp-jshint');
-var nunjucksRender = require('gulp-nunjucks-render');
+var uglify = require('gulp-uglify');
 
 var autoPrefixBrowserList = [
   'last 2 version',
@@ -36,7 +36,7 @@ var paths = {
   root: "app/",
   images: {
     origin:'app/assets/images/*',
-    dest:'app/assets/images',
+    dest:'build/assets/images/',
   },
   fonts: {
     origin:'app/assets/fonts/*',
@@ -47,14 +47,14 @@ var paths = {
     index: 'app/' + fileNames.scripts,
   },
   styles: {
-    main: 'app/general/styles/index.scss',
     all: ['app/**/*.scss', 'app/**/*.sass'],
     index: 'app/' + fileNames.styles,
+    main: 'app/general/styles/index.scss',
   },
   html: {
     all: ['app/pages/**/*.html', 'app/components/**/*.html','app/**/*.nunjucks'],
-    main: 'app/general/html/index.nunjucks',
     index: 'app/' + fileNames.html,
+    main: 'app/general/html/index.nunjucks',
   },
   build: {
     root: 'build/',
@@ -70,13 +70,13 @@ var commands = {
     styles: 'styles',
   },
   deploy: {
+    fonts: 'fonts-deploy',
+    images: 'images-deploy',
     html: 'html-deploy',
+    misc: 'misc-deploy',
+    scaffold: 'scaffold',
     scripts: 'scripts-deploy',
     styles: 'styles-deploy',
-    images: 'images-deploy',
-    misc: 'misc-deploy',
-    fonts: 'fonts-deploy',
-    scaffold: 'scaffold',
   },
   browserSync: 'browserSync',
   clean: 'clean',
@@ -247,20 +247,18 @@ gulp.task(commands.deploy.misc, function() {
 // GENERAL
 //cleans our build directory in case things got deleted
 gulp.task(commands.clean, function() {
-    return shell.task([
-      'rm -rf build'
-    ]);
+  exec('rm -rf build');
+  exec('rm ' + paths.html.index);
+  exec('rm ' + paths.scripts.index);
+  exec('rm ' + paths.styles.index);
 });
 
 //create folders using shell
 gulp.task(commands.deploy.scaffold, function() {
-  return shell.task([
-      'mkdir build',
-      'mkdir build/assets',
-      'mkdir build/assets/fonts',
-      'mkdir build/assets/images',
-    ]
-  );
+  exec('mkdir build');
+  exec('mkdir build/assets');
+  exec('mkdir build/assets/fonts');
+  exec('mkdir build/assets/images');
 });
 
 gulp.task(commands.browserSync, function() {
