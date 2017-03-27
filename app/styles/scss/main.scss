@@ -1,9 +1,17 @@
-//tools, helpers, and other config
-@import 'abstracts/_mixins';
-@import 'abstracts/_variables';
-
+// vendor
 @import 'vendor/_reset';
 @import 'vendor/_normalize';
 
+//tools, helpers, and other config
+@import 'abstracts/_mixins';
+@import 'abstracts/_config';
+@import 'abstracts/_interfaces';
+
 //global things
-@import 'base/_main';
+@import 'base/_general';
+
+//pages
+// @import 'pages/';
+
+//partials
+@import 'partials/_board-interactive'

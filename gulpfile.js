@@ -156,7 +156,7 @@ gulp.task('styles-deploy', function() {
 //basically just keeping an eye on all HTML files
 gulp.task('html', function() {
     //watch any and all HTML files and refresh when something changes
-    return gulp.src('app/*.html')
+    return gulp.src(['app/*.html','app/templates/**/*.nunjucks'])
         .pipe(plumber())
         .pipe(browserSync.reload({stream: true}))
         //catch errors
@@ -191,7 +191,7 @@ gulp.task('html-deploy', function() {
 
 gulp.task('nunjucks', function() {
   // Gets .html and .nunjucks files in pages
-  return gulp.src('app/templates/pages/**/*.+(html|nunjucks)')
+  return gulp.src('app/templates/pages/*.+(html|nunjucks)')
   // Renders template with nunjucks
   .pipe(nunjucksRender({
       path: ['app/']
@@ -230,7 +230,7 @@ gulp.task('default', ['browserSync', 'lint','nunjucks','scripts', 'styles'], fun
     gulp.watch('app/scripts/js/**', ['scripts']);
     gulp.watch('app/styles/scss/**', ['styles']);
     gulp.watch('app/assets/images/**', ['images']);
-    gulp.watch('app/*.html', ['html']);
+    gulp.watch(['app/*.html','app/templates/**'], ['nunjucks', 'html']);
 });
 
 //this is our deployment task, it will set everything for deployment-ready files

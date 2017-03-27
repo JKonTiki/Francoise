@@ -1,8 +1,6 @@
 {% extends "./templates/layout.nunjucks" %}
 {% block content %}
-
-
-  {% include "./templates/partials/testPartial.nunjucks" %}
-
+ 
+  {% include "./templates/partials/board-interactive.nunjucks" %}
 
 {% endblock %}
