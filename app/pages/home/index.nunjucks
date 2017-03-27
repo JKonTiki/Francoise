@@ -1,0 +1,6 @@
+{% extends "./general/layout.nunjucks" %}
+{% block content %}
+
+  {% include "./components/board-interactive/index.nunjucks" %}
+
+{% endblock %}

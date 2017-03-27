@@ -1,0 +1,17 @@
+// vendor
+@import 'vendor/_normalize';
+@import 'vendor/_reset';
+
+//tools, helpers, variables, and other config
+@import 'abstracts/_config';
+@import 'abstracts/_interfaces';
+@import 'abstracts/_mixins';
+
+//general things
+@import 'base/_general';
+
+//pages
+@import './../../pages/home/_styles';
+
+//partials
+@import './../../components/board-interactive/_styles';
