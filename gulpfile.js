@@ -47,13 +47,13 @@ var paths = {
     index: 'app/' + fileNames.scripts,
   },
   styles: {
-    main: 'app/general/styles/main.scss',
+    main: 'app/general/styles/index.scss',
     all: ['app/**/*.scss', 'app/**/*.sass'],
     index: 'app/' + fileNames.styles,
   },
   html: {
     all: ['app/**.html','app/**/*.nunjucks'],
-    nunjucks: 'app/pages/**/*.nunjucks',
+    main: 'app/general/html/index.nunjucks',
     index: 'app/' + fileNames.html,
   },
   dist: {
@@ -184,7 +184,7 @@ gulp.task(commands.htmlReload, function() {
 
 gulp.task(commands.compile.html, function() {
   // Gets .html and .nunjucks files in pages
-  return gulp.src(paths.html.nunjucks)
+  return gulp.src(paths.html.main)
   // Renders template with nunjucks
   .pipe(nunjucksRender({
       path: [paths.root]
@@ -295,7 +295,7 @@ gulp.task('default',
     gulp.watch(paths.scripts.all, [commands.compile.scripts]);
     gulp.watch(paths.styles.all, [commands.compile.styles]);
     gulp.watch(paths.images.origin, [commands.images]);
-    gulp.watch(paths.html.nunjucks, [commands.compile.html, commands.htmlReload]);
+    gulp.watch(paths.html.all, [commands.compile.html, commands.htmlReload]);
 });
 
 //this is our deployment task, it will set everything for deployment-ready files
