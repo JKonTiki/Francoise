@@ -10,11 +10,13 @@ var gulp = require('gulp');
 var gulpSequence = require('gulp-sequence').use(gulp);
 var gutil = require('gulp-util');
 var imagemin = require('gulp-imagemin');
+var inject = require('gulp-inject-string');
 var jshint = require('gulp-jshint');
 var minifyCSS = require('gulp-minify-css');
 var nunjucksRender = require('gulp-nunjucks-render');
 var pathExists = require('path-exists');
 var plumber = require('gulp-plumber');
+var rename = require('gulp-rename');
 var sass = require('gulp-sass');
 var sourceMaps = require('gulp-sourcemaps');
 var uglify = require('gulp-uglify');
@@ -37,7 +39,7 @@ var fileNames = {
 
 var flags = {
   create: ['c', 'create', 'g', 'generate'],
-  remove: ['d', 'delete', 'r', 'remove'],
+  delete: ['d', 'delete', 'r', 'remove'],
 }
 
 var paths = {
@@ -284,30 +286,120 @@ gulp.task(commands.browserSync, function() {
 });
 
 
-// CREATE
-
+// CREATE components and pages
+// use a command like 'gulp component -g {$name-of-component}'
+// [-generate, -c, && -create are also usable flags]
+// generate a component
 gulp.task(commands.component, function(){
-  var keys = [];
+  var createKeys = [];
+  var deleteKeys = [];
+  // check flags to see if any are keys for a creation or deletion
   for (var loopingKey in argv) {
     if (flags.create.includes(loopingKey)) {
-      keys.push(loopingKey);
+      createKeys.push(loopingKey);
+    }
+    if (flags.delete.includes(loopingKey)) {
+      deleteKeys.push(loopingKey);
     }
   }
-  if (keys.length < 1) {
+  // if no relevant keys exist, break
+  if (createKeys.length < 1 && deleteKeys.length < 1) {
     return;
   }
-  for (var i = 0; i < keys.length; i++) {
-    var componentName = argv[keys[i]];
-    pathExists('app/components/'+ componentName).then(exists =>{
+  // loop through and conduct creations
+  for (var i = 0; i < createKeys.length; i++) {
+    var name = argv[createKeys[i]];
+    pathExists('app/components/'+ name).then(exists =>{
       if (exists) {
-        console.log('component folder "'+ componentName +'" already exists!');
+        console.log('component folder "'+ name +'" already exists!');
       } else {
-        console.log('creating component: ', componentName);
-        var componentFolder = 'app/components/' + componentName;
-        exec('mkdir ' + componentFolder);
-        exec('touch ' + componentFolder + '/index.nunjucks');
-        exec('touch ' + componentFolder + '/scripts.js');
-        exec('touch ' + componentFolder + '/_styles.scss');
+        console.log('creating component: ', name);
+        var fldrPath = 'app/components/' + name;
+        exec('mkdir ' + fldrPath);
+        exec('touch ' + fldrPath + '/index.nunjucks');
+        exec('touch ' + fldrPath + '/scripts.js');
+        exec('touch ' + fldrPath + '/_styles.scss');
+        // below we are adding component's styleSheet to importation main scss index
+        gulp.src('app/general/styles/index.scss')
+        .pipe(inject.after('//components', `\n@import './../../components/${name}/_styles';`))
+        .pipe(rename('index.scss'))
+        .pipe(gulp.dest('app/general/styles'));
+      }
+    })
+  }
+  for (var i = 0; i < deleteKeys.length; i++) {
+    var name = argv[deleteKeys[i]];
+    pathExists('app/components/'+ name).then(exists =>{
+      if (!exists) {
+        console.log('no component folder for "'+ name +'" exists');
+      } else {
+        console.log('removing component: ', name);
+        var fldrPath = 'app/components/' + name;
+        // remove entire component folder
+        exec('rm -rf ' + fldrPath);
+        // remove component's styleSheet importation from main scss index
+        gulp.src('app/general/styles/index.scss')
+        .pipe(inject.replace(`\n@import './../../components/${name}/_styles';`, ''))
+        .pipe(rename('index.scss'))
+        .pipe(gulp.dest('app/general/styles'));
+      }
+    })
+  }
+});
+
+//generate a page
+gulp.task(commands.page, function(){
+  var createKeys = [];
+  var deleteKeys = [];
+  // check flags to see if any are keys for a creation or deletion
+  for (var loopingKey in argv) {
+    if (flags.create.includes(loopingKey)) {
+      createKeys.push(loopingKey);
+    }
+    if (flags.delete.includes(loopingKey)) {
+      deleteKeys.push(loopingKey);
+    }
+  }
+  // if no relevant keys exist, break
+  if (createKeys.length < 1 && deleteKeys.length < 1) {
+    return;
+  }
+  // loop through and conduct creations
+  for (var i = 0; i < createKeys.length; i++) {
+    var name = argv[createKeys[i]];
+    pathExists('app/pages/'+ name).then(exists =>{
+      if (exists) {
+        console.log('page folder "'+ name +'" already exists!');
+      } else {
+        console.log('creating page: ', name);
+        var fldrPath = 'app/pages/' + name;
+        exec('mkdir ' + fldrPath);
+        exec('touch ' + fldrPath + '/index.nunjucks');
+        exec('touch ' + fldrPath + '/scripts.js');
+        exec('touch ' + fldrPath + '/_styles.scss');
+        // below we are adding page's styleSheet to importation main scss index
+        gulp.src('app/general/styles/index.scss')
+        .pipe(inject.after('//pages', `\n@import './../../pages/${name}/_styles';`))
+        .pipe(rename('index.scss'))
+        .pipe(gulp.dest('app/general/styles'));
+      }
+    })
+  }
+  for (var i = 0; i < deleteKeys.length; i++) {
+    var name = argv[deleteKeys[i]];
+    pathExists('app/pages/'+ name).then(exists =>{
+      if (!exists) {
+        console.log('no page folder for "'+ name +'" exists');
+      } else {
+        console.log('removing page: ', name);
+        var fldrPath = 'app/pages/' + name;
+        // remove entire page folder
+        exec('rm -rf ' + fldrPath);
+        // remove page's styleSheet importation from main scss index
+        gulp.src('app/general/styles/index.scss')
+        .pipe(inject.replace(`\n@import './../../pages/${name}/_styles';`, ''))
+        .pipe(rename('index.scss'))
+        .pipe(gulp.dest('app/general/styles'));
       }
     })
   }

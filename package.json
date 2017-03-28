@@ -1,11 +1,14 @@
 {
-  "name": "YourProject",
+  "name": "t-i-t-l-e",
   "version": "0.0.1",
-  "description": "Description of your project",
+  "description": "-°‡-‹-d-e-s-c-r-i-b-e-›-‡°-",
   "dependencies": {
-    "gulp-babel": "^6.1.2",
-    "lodash": "^4.17.4",
-    "path-exists": "^3.0.0"
+    "lodash": "^4.17.4"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JKonTiki/Francoise"
   },
   "devDependencies": {
     "babel-core": "^6.24.0",
@@ -14,14 +17,17 @@
     "browser-sync": "^2.18.7",
     "gulp": "^3.9.1",
     "gulp-autoprefixer": "^3.1.1",
+    "gulp-babel": "^6.1.2",
     "gulp-concat": "^2.6.1",
     "gulp-declare": "^0.3.0",
     "gulp-exec": "^2.1.3",
     "gulp-imagemin": "^3.1.1",
+    "gulp-inject-string": "^1.1.0",
     "gulp-jshint": "^2.0.4",
     "gulp-minify-css": "^1.2.4",
     "gulp-nunjucks-render": "^2.0.0",
     "gulp-plumber": "^1.1.0",
+    "gulp-rename": "^1.2.2",
     "gulp-sass": "^3.1.0",
     "gulp-sequence": "^0.4.6",
     "gulp-sourcemaps": "^2.4.1",
@@ -30,6 +36,7 @@
     "gulp-wrap": "^0.13.0",
     "jshint": "^2.9.4",
     "jshint-stylish": "^2.2.1",
-    "minimist": "^1.2.0"
+    "minimist": "^1.2.0",
+    "path-exists": "^3.0.0"
   }
 }
