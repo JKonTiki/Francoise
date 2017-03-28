@@ -1,9 +1,11 @@
 // get gulp dependencies
+var argv = require('minimist')(process.argv.slice(2));
 var autoprefixer = require('gulp-autoprefixer');
 var babel = require("gulp-babel");
 var browserSync = require('browser-sync');
 var concat = require('gulp-concat');
 var exec = require('child_process').exec;
+var fs = require('fs');
 var gulp = require('gulp');
 var gulpSequence = require('gulp-sequence').use(gulp);
 var gutil = require('gulp-util');
@@ -11,6 +13,7 @@ var imagemin = require('gulp-imagemin');
 var jshint = require('gulp-jshint');
 var minifyCSS = require('gulp-minify-css');
 var nunjucksRender = require('gulp-nunjucks-render');
+var pathExists = require('path-exists');
 var plumber = require('gulp-plumber');
 var sass = require('gulp-sass');
 var sourceMaps = require('gulp-sourcemaps');
@@ -31,6 +34,11 @@ var fileNames = {
   scripts: 'scripts.js',
   styles: 'styles.css',
 };
+
+var flags = {
+  create: ['c', 'create', 'g', 'generate'],
+  remove: ['d', 'delete', 'r', 'remove'],
+}
 
 var paths = {
   root: "app/",
@@ -83,6 +91,8 @@ var commands = {
   htmlReload: 'html-reload',
   images: 'images',
   lint: 'lint',
+  component: 'component',
+  page: 'page',
 };
 
 
@@ -273,6 +283,35 @@ gulp.task(commands.browserSync, function() {
     });
 });
 
+
+// CREATE
+
+gulp.task(commands.component, function(){
+  var keys = [];
+  for (var loopingKey in argv) {
+    if (flags.create.includes(loopingKey)) {
+      keys.push(loopingKey);
+    }
+  }
+  if (keys.length < 1) {
+    return;
+  }
+  for (var i = 0; i < keys.length; i++) {
+    var componentName = argv[keys[i]];
+    pathExists('app/components/'+ componentName).then(exists =>{
+      if (exists) {
+        console.log('component folder "'+ componentName +'" already exists!');
+      } else {
+        console.log('creating component: ', componentName);
+        var componentFolder = 'app/components/' + componentName;
+        exec('mkdir ' + componentFolder);
+        exec('touch ' + componentFolder + '/index.nunjucks');
+        exec('touch ' + componentFolder + '/scripts.js');
+        exec('touch ' + componentFolder + '/_styles.scss');
+      }
+    })
+  }
+});
 
 //this is our master task when you run `gulp` in CLI / Terminal
 //this is the main watcher to use when in active development
