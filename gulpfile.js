@@ -278,13 +278,6 @@ gulp.task(commands.deploy.fonts, function() {
         .pipe(gulp.dest(paths.fonts.dest));
 });
 
-//misc files for deploy
-gulp.task(commands.deploy.misc, function() {
-    // gulp.src([paths.root + '*', !(paths.html.index), !(paths.scripts.index), !(paths.styles.index)])
-    //     //prevent pipe breaking caused by errors from gulp plugins
-    //     .pipe(plumber())
-    //     .pipe(gulp.dest(paths.build.root));
-
     //grab any hidden files too
     gulp.src(paths.root + '.*')
         //prevent pipe breaking caused by errors from gulp plugins
@@ -300,6 +293,7 @@ gulp.task(commands.clean, function() {
   exec('rm ' + paths.html.index);
   exec('rm ' + paths.scripts.index);
   exec('rm ' + paths.styles.index);
+  exec('rm ' + paths.scripts.index + '.map');
 });
 
 //create folders using shell
@@ -324,8 +318,6 @@ gulp.task(commands.browserSync, function() {
 
 
 // CREATE components and pages
-// use a command like 'gulp component -g {$name-of-component}'
-// [-generate, -c, && -create are also usable flags]
 // generate a component
 gulp.task(commands.component, function(){
   var createKeys = [];
@@ -415,7 +407,7 @@ gulp.task(commands.page, function(){
         exec('touch ' + fldrPath + '/scripts.js');
         exec('touch ' + fldrPath + '/_styles.scss');
         // below we are adding page's styleSheet to importation main scss index
-        gulp.src('app/general/styles/index.scss')
+        gulp.src(paths.styles.main)
         .pipe(inject.after('//pages', `\n@import './../../pages/${name}/_styles';`))
         .pipe(rename('index.scss'))
         .pipe(gulp.dest(paths.styles.general));
@@ -433,7 +425,7 @@ gulp.task(commands.page, function(){
         // remove entire page folder
         exec('rm -rf ' + fldrPath);
         // remove page's styleSheet importation from main scss index
-        gulp.src('app/general/styles/index.scss')
+        gulp.src(paths.styles.main)
         .pipe(inject.replace(`\n@import './../../pages/${name}/_styles';`, ''))
         .pipe(rename('index.scss'))
         .pipe(gulp.dest(paths.styles.general));
@@ -443,11 +435,6 @@ gulp.task(commands.page, function(){
 });
 
 //this is our master task when you run `gulp` in CLI / Terminal
-//this is the main watcher to use when in active development
-//  this will:
-//  startup the web server,
-//  start up browserSync
-//  compress all scripts and SCSS files
 gulp.task('default',
   [
     commands.browserSync,
@@ -469,7 +456,6 @@ gulp.task('deploy', gulpSequence(
   commands.deploy.scaffold,
   commands.compile.html,
   commands.compile.scripts,
-  commands.jsBrowserify,
   commands.compile.styles,
   [
     commands.deploy.scripts,

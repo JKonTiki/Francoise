@@ -1,4 +1,5 @@
-console.log('in navigator');
-var testImport = require('./transitions').test;
-console.log(testImport);
-console.log('hi');
+// write render methods running through URL
+
+
+
+//TODO in gulpfile have auto-generated pages inject render methods here
