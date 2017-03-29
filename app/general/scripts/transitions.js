@@ -1,9 +1,4 @@
-let obj = {
-  yo: 'yo',
-  hi: 'hi',
-}
+console.log('in transitions');
 
-let {yo, hi} = obj;
-
-
-console.log(yo, hi, 'test');
+var test = 'test export from transitions';
+exports.test = test;

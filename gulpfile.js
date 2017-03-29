@@ -1,11 +1,14 @@
 // get gulp dependencies
 var argv = require('minimist')(process.argv.slice(2));
 var autoprefixer = require('gulp-autoprefixer');
-var babel = require("gulp-babel");
+var babelify = require("babelify");
+var browserify = require('browserify');
 var browserSync = require('browser-sync');
+var buffer = require('vinyl-buffer');
 var concat = require('gulp-concat');
 var exec = require('child_process').exec;
 var fs = require('fs');
+var globby = require('globby');
 var gulp = require('gulp');
 var gulpSequence = require('gulp-sequence').use(gulp);
 var gutil = require('gulp-util');
@@ -18,7 +21,9 @@ var pathExists = require('path-exists');
 var plumber = require('gulp-plumber');
 var rename = require('gulp-rename');
 var sass = require('gulp-sass');
+var source = require('vinyl-source-stream');
 var sourceMaps = require('gulp-sourcemaps');
+var through = require('through2');
 var uglify = require('gulp-uglify');
 
 var autoPrefixBrowserList = [
@@ -55,9 +60,11 @@ var paths = {
   scripts: {
     all:['app/pages/**/*.js', 'app/components/**/*.js', 'app/general/scripts/*.js',],
     index: 'app/' + fileNames.scripts,
+    tempConcat: 'tmp/allConcat.js',
   },
   styles: {
     all: ['app/**/*.scss', 'app/**/*.sass'],
+    general: 'app/general/styles',
     index: 'app/' + fileNames.styles,
     main: 'app/general/styles/index.scss',
   },
@@ -88,6 +95,8 @@ var commands = {
     scripts: 'scripts-deploy',
     styles: 'styles-deploy',
   },
+  jsBrowserify: 'jsBrowserify',
+  concatJs: 'concatJs',
   browserSync: 'browserSync',
   clean: 'clean',
   htmlReload: 'html-reload',
@@ -101,20 +110,48 @@ var commands = {
 // SCRIPTS
 //compiling our Javascripts
 gulp.task(commands.compile.scripts, function() {
-    return gulp.src(paths.scripts.all)
-                //prevent pipe breaking caused by errors from gulp plugins
-                .pipe(plumber())
-                // babel for language transpiling
-                .pipe(babel())
-                //this is the filename of the compressed version of our JS
-                .pipe(concat(fileNames.scripts))
-                //catch errors
-                .on('error', gutil.log)
-                //where we will store our finalized, compressed script
-                .pipe(gulp.dest(paths.root))
-                //notify browserSync to refresh
-                .pipe(browserSync.reload({stream: true}));
+  // gulp expects tasks to return a stream, so we create one here.
+ var bundledStream = through();
+
+ bundledStream
+   // turns the output bundle stream into a stream containing
+   // the normal attributes gulp plugins expect.
+   .pipe(source(fileNames.scripts))
+   // the rest of the gulp task, as you would normally write it.
+   .pipe(buffer())
+   .pipe(sourceMaps.init({loadMaps: true}))
+     // Add gulp plugins to the pipeline here.
+     .on('error', gutil.log)
+   .pipe(sourceMaps.write('./'))
+   .pipe(gulp.dest(paths.root))
+   .pipe(browserSync.reload({stream: true}));
+
+ // "globby" replaces the normal "gulp.src" as Browserify
+ // creates it's own readable stream.
+ globby(paths.scripts.all).then(function(entries) {
+   // create the Browserify instance.
+   var b = browserify({
+     entries: entries,
+     debug: true,
+   });
+
+   // pipe the Browserify stream into the stream we created earlier
+   // this starts our gulp pipeline.
+   b
+   .transform("babelify", {presets: ["es2015"]})
+   .bundle()
+   .pipe(bundledStream);
+
+ }).catch(function(err) {
+   // ensure any errors from globby are handled
+   bundledStream.emit('error', err);
+ });
+
+ // finally, we return the stream, so gulp knows when this task is done.
+ return bundledStream;
 });
+
+
 //moving our Javascripts to deployment
 gulp.task(commands.deploy.scripts, function() {
     //this is where our dev JS scripts are
@@ -311,7 +348,7 @@ gulp.task(commands.component, function(){
     var name = argv[createKeys[i]];
     pathExists('app/components/'+ name).then(exists =>{
       if (exists) {
-        console.log('component folder "'+ name +'" already exists!');
+        console.log('component folder "' + name + '" already exists!');
       } else {
         console.log('creating component: ', name);
         var fldrPath = 'app/components/' + name;
@@ -320,10 +357,10 @@ gulp.task(commands.component, function(){
         exec('touch ' + fldrPath + '/scripts.js');
         exec('touch ' + fldrPath + '/_styles.scss');
         // below we are adding component's styleSheet to importation main scss index
-        gulp.src('app/general/styles/index.scss')
+        gulp.src(paths.styles.index)
         .pipe(inject.after('//components', `\n@import './../../components/${name}/_styles';`))
         .pipe(rename('index.scss'))
-        .pipe(gulp.dest('app/general/styles'));
+        .pipe(gulp.dest(paths.styles.general));
       }
     })
   }
@@ -331,17 +368,17 @@ gulp.task(commands.component, function(){
     var name = argv[deleteKeys[i]];
     pathExists('app/components/'+ name).then(exists =>{
       if (!exists) {
-        console.log('no component folder for "'+ name +'" exists');
+        console.log('no component folder for "' + name + '" exists');
       } else {
         console.log('removing component: ', name);
         var fldrPath = 'app/components/' + name;
         // remove entire component folder
         exec('rm -rf ' + fldrPath);
         // remove component's styleSheet importation from main scss index
-        gulp.src('app/general/styles/index.scss')
+        gulp.src(paths.styles.index)
         .pipe(inject.replace(`\n@import './../../components/${name}/_styles';`, ''))
         .pipe(rename('index.scss'))
-        .pipe(gulp.dest('app/general/styles'));
+        .pipe(gulp.dest(paths.styles.general));
       }
     })
   }
@@ -369,7 +406,7 @@ gulp.task(commands.page, function(){
     var name = argv[createKeys[i]];
     pathExists('app/pages/'+ name).then(exists =>{
       if (exists) {
-        console.log('page folder "'+ name +'" already exists!');
+        console.log('page folder "' + name + '" already exists!');
       } else {
         console.log('creating page: ', name);
         var fldrPath = 'app/pages/' + name;
@@ -381,7 +418,7 @@ gulp.task(commands.page, function(){
         gulp.src('app/general/styles/index.scss')
         .pipe(inject.after('//pages', `\n@import './../../pages/${name}/_styles';`))
         .pipe(rename('index.scss'))
-        .pipe(gulp.dest('app/general/styles'));
+        .pipe(gulp.dest(paths.styles.general));
       }
     })
   }
@@ -389,7 +426,7 @@ gulp.task(commands.page, function(){
     var name = argv[deleteKeys[i]];
     pathExists('app/pages/'+ name).then(exists =>{
       if (!exists) {
-        console.log('no page folder for "'+ name +'" exists');
+        console.log('no page folder for "' + name + '" exists');
       } else {
         console.log('removing page: ', name);
         var fldrPath = 'app/pages/' + name;
@@ -399,7 +436,7 @@ gulp.task(commands.page, function(){
         gulp.src('app/general/styles/index.scss')
         .pipe(inject.replace(`\n@import './../../pages/${name}/_styles';`, ''))
         .pipe(rename('index.scss'))
-        .pipe(gulp.dest('app/general/styles'));
+        .pipe(gulp.dest(paths.styles.general));
       }
     })
   }
@@ -417,7 +454,7 @@ gulp.task('default',
     commands.lint,
     commands.compile.html,
     commands.compile.scripts,
-    commands.compile.styles
+    commands.compile.styles,
   ], function() {
     //a list of watchers, so it will watch all of the following files waiting for changes
     gulp.watch(paths.scripts.all, [commands.compile.scripts]);
@@ -432,6 +469,7 @@ gulp.task('deploy', gulpSequence(
   commands.deploy.scaffold,
   commands.compile.html,
   commands.compile.scripts,
+  commands.jsBrowserify,
   commands.compile.styles,
   [
     commands.deploy.scripts,

@@ -2,6 +2,8 @@ node_modules
 .sass-cache
 .DS_Store
 build
+tmp
 app/index.html
 app/styles.css
 app/scripts.js
+app/scripts.js.map
