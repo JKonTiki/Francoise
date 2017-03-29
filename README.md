@@ -31,7 +31,7 @@ Francoise/
 |   |—— components/
 |   |   |—— navbar-example/
 |   |   |   |—— _styles.scss
-|   |   |   |—— index.nunjucks  /* @include this in any pages where you want it to show up */
+|   |   |   |—— index.nunjucks     /* @include this in any pages where you want it to show up */
 |   |   |   |—— scripts.js
 |   |—— general/
 |   |   |—— html/                  /* any common html should live here */
@@ -43,7 +43,7 @@ Francoise/
 |   |   |   |—— abstracts/    /* SASS variables, utils, & other tools */
 |   |   |   |—— base/         /* any common styling should live here */
 |   |   |   |—— vendor/
-|   |   |   |—— index.scss    /* our header && footer */
+|   |   |   |—— index.scss    /* our SASS entry pt, all other files should be @import'd here */
 |   |—— pages/
 |   |   |—— home-example/
 |   |   |   |—— _styles.scss
