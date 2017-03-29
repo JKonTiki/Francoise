@@ -112,7 +112,6 @@ var commands = {
 gulp.task(commands.compile.scripts, function() {
   // gulp expects tasks to return a stream, so we create one here.
  var bundledStream = through();
-
  bundledStream
    // turns the output bundle stream into a stream containing
    // the normal attributes gulp plugins expect.
@@ -276,13 +275,6 @@ gulp.task(commands.deploy.fonts, function() {
         //prevent pipe breaking caused by errors from gulp plugins
         .pipe(plumber())
         .pipe(gulp.dest(paths.fonts.dest));
-});
-
-    //grab any hidden files too
-    gulp.src(paths.root + '.*')
-        //prevent pipe breaking caused by errors from gulp plugins
-        .pipe(plumber())
-        .pipe(gulp.dest(paths.build.root));
 });
 
 
