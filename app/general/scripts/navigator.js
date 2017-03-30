@@ -5,6 +5,7 @@
   let routes = {
     // route values are the hash that will actually show in the URL
     home: '',
+		error: 'error',
 	//!ROUTES! (this comment is an important flag for gulpfile, DND!)
   }
   let hash = window.location.hash;

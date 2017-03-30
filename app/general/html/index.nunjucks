@@ -2,6 +2,7 @@
 {% block content %}
 
   <!--PAGES-->
+	{% include './pages/error/index.nunjucks' %}
   {% include "./pages/home/index.nunjucks" %}
 
 {% endblock %}

@@ -59,7 +59,7 @@ var paths = {
     dest:'build/assets/fonts',
   },
   scripts: {
-    all:['app/pages/**/*.js', 'app/components/**/*.js', 'app/general/scripts/*.js',],
+    all:['app/components/**/*.js', 'app/pages/**/*.js', 'app/general/scripts/*.js',],
     general: 'app/general/scripts/',
     index: 'app/' + fileNames.scripts,
     navigator: 'app/general/scripts/navigator.js',
@@ -343,10 +343,22 @@ gulp.task(commands.component, function(){
         exec('touch ' + fldrPath + '/scripts.js');
         exec('touch ' + fldrPath + '/_styles.scss');
         // below we are adding component's styleSheet to importation main scss index
-        gulp.src(paths.styles.index)
+        gulp.src(paths.styles.main)
         .pipe(inject.after('//!COMPONENTS!', `\n@import './../../components/${name}/_styles';`))
         .pipe(rename('index.scss'))
         .pipe(gulp.dest(paths.styles.general));
+        // add wrapping div to component's index.nunjucks for styles
+        gulp.src(fldrPath + '/index.nunjucks')
+        .pipe(inject.prepend(`<div id='component-${name}' class="component">\n`))
+        .pipe(inject.append(`\n</div>`))
+        .pipe(rename('index.nunjucks'))
+        .pipe(gulp.dest(fldrPath + '/'));
+        // add wrapper to local SASS file for scoping
+        gulp.src(fldrPath + '/_styles.scss')
+        .pipe(inject.prepend(`#component-${name} {\n`))
+        .pipe(inject.append(`\n}`))
+        .pipe(rename('_styles.scss'))
+        .pipe(gulp.dest(fldrPath + '/'));
       }
     })
   }
@@ -361,7 +373,7 @@ gulp.task(commands.component, function(){
         // remove entire component folder
         exec('rm -rf ' + fldrPath);
         // remove component's styleSheet importation from main scss index
-        gulp.src(paths.styles.index)
+        gulp.src(paths.styles.main)
         .pipe(inject.replace(`\n@import './../../components/${name}/_styles';`, ''))
         .pipe(rename('index.scss'))
         .pipe(gulp.dest(paths.styles.general));
@@ -421,6 +433,12 @@ gulp.task(commands.page, function(){
         .pipe(inject.after('<!--PAGES-->', `\n\t{% include './pages/${name}/index.nunjucks' %}`))
         .pipe(rename("index.nunjucks"))
         .pipe(gulp.dest(paths.html.main.split("index.nunjucks")[0]));
+        // add wrapper to local SASS file for scoping
+        gulp.src(fldrPath + '/_styles.scss')
+        .pipe(inject.prepend(`#page-${name} {\n`))
+        .pipe(inject.append(`\n}`))
+        .pipe(rename('_styles.scss'))
+        .pipe(gulp.dest(fldrPath + '/'));
       }
     })
   }
