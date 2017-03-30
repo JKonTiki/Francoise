@@ -4,8 +4,14 @@
 (function(){
   let routes = {
     // route values are the hash that will actually show in the URL
-    home: '',
-		error: 'error',
+    home: {
+      hash: '',
+      divId: 'page-home',
+    },
+		error: {
+      hash: 'error',
+      divId: 'page-error'
+    },
 	//!ROUTES! (this comment is an important flag for gulpfile, DND!)
   }
   let hash = window.location.hash;
@@ -18,15 +24,15 @@
   function renderRoute(_hash) {
     // first we find page matching hash
     let activePage;
-    for (let route in routes){
-      if (routes[route] === _hash) {
-        activePage = document.querySelector('#page-' + route);
+    for (let routeKey in routes){
+      if (routes[routeKey].hash === _hash) {
+        activePage = document.querySelector(`#${routes[routeKey].divId}`);
       }
       break;
     }
     // clear all routes
-    for (let route in routes){
-      let page = document.querySelector('#page-' + route);
+    for (let routeKey in routes){
+      let page = document.querySelector(`#${routes[routeKey].divId}`);
       let pageClasses = page.classList.value.split(' ');
       if (!pageClasses.includes('hidden')) {
         page.classList.add('hidden');
@@ -34,7 +40,7 @@
     }
     if (!activePage) {
       // if no page exists for that hash, show error page
-      activePage = document.querySelector('#page-error');
+      activePage = document.querySelector(`#${routes.error.divId}`);
     }
     // show hash's route if it not already shown
     let activePageClasses = activePage.classList.value.split(' ');

@@ -331,62 +331,68 @@ gulp.task(commands.component, function(){
   }
   // loop through and conduct creations
   for (var i = 0; i < createKeys.length; i++) {
+    // check name for illegal characters
+    if (!(/^[A-Za-z0-9\-\_]+$/.test(argv[createKeys[i]]))) {
+      console.log('your name contains illegal characters - aborting');
+      return;
+    }
     var name = argv[createKeys[i]];
-    pathExists('app/components/'+ name).then(exists =>{
+    pathExists(`app/components/${name}`).then(exists =>{
       if (exists) {
-        console.log('component folder "' + name + '" already exists!');
+        console.log(`component folder ${name} already exists!`);
       } else {
-        console.log('creating component: ', name);
-        var fldrPath = 'app/components/' + name;
-        exec('mkdir ' + fldrPath);
-        exec('touch ' + fldrPath + '/index.nunjucks');
-        exec('touch ' + fldrPath + '/scripts.js');
-        exec('touch ' + fldrPath + '/_styles.scss');
+        console.log(`creating component: ${name}`);
+        var fldrPath = `app/components/${name}`;
+        exec(`mkdir ${fldrPath}`);
+        exec(`touch ${fldrPath}/${name}-index.nunjucks`);
+        exec(`touch ${fldrPath}/${name}-scripts.js`);
+        exec(`touch ${fldrPath}/_${name}-styles.scss`);
         // below we are adding component's styleSheet to importation main scss index
         gulp.src(paths.styles.main)
-        .pipe(inject.after('//!COMPONENTS!', `\n@import './../../components/${name}/_styles';`))
-        .pipe(rename('index.scss'))
-        .pipe(gulp.dest(paths.styles.general));
+          .pipe(inject.after('//!COMPONENTS!', `\n@import './../../components/${name}/_${name}-styles';`))
+          .pipe(rename(`index.scss`))
+          .pipe(gulp.dest(paths.styles.general));
         // add wrapping div to component's index.nunjucks for styles
-        gulp.src(fldrPath + '/index.nunjucks')
-        .pipe(inject.prepend(`<!--use this wrapper to keep everything within component!-->` +
-          `\n<!--be sure to copy the following tag (wrapped with curly braces {}) to any pages where you this comp. to show up-->` +
-          `\n<!--% include "components/${name}/index.nunjucks" %-->` +
-          `\n<div id='component-${name}' class="component">\n`))
-        .pipe(inject.append(`\n</div>`))
-        .pipe(rename('index.nunjucks'))
-        .pipe(gulp.dest(fldrPath + '/'));
+        gulp.src(`${fldrPath}/${name}-index.nunjucks`)
+          .pipe(inject.prepend(`<!--use this wrapper to keep everything within component!-->` +
+            `\n<!--be sure to copy the following tag (wrapped with curly braces {}) to any pages where you this comp. to show up-->` +
+            `\n<!--% include "components/${name}/index.nunjucks" %-->` +
+            `\n<div id='component-${name}' class="component">\n`))
+          .pipe(inject.append(`\n</div>`))
+          .pipe(rename(`${name}-index.nunjucks`))
+          .pipe(gulp.dest(`${fldrPath}/`));
         // add wrapper to local SASS file for scoping
-        gulp.src(fldrPath + '/_styles.scss')
-        .pipe(inject.prepend(`// use this wrapper to preserve scope!\n#component-${name} {\n`))
-        .pipe(inject.append(`\n}`))
-        .pipe(rename('_styles.scss'))
-        .pipe(gulp.dest(fldrPath + '/'));
+        gulp.src(`${fldrPath}/_${name}-styles.scss`)
+          .pipe(inject.prepend(`// use this wrapper to preserve scope!\n#component-${name} {\n`))
+          .pipe(inject.append(`\n}`))
+          .pipe(rename(`_${name}-styles.scss`))
+          .pipe(gulp.dest(`${fldrPath}/`));
         // add intro comment to js file
-        gulp.src(fldrPath + '/scripts.js')
-        .pipe(inject.prepend(`// var testModule =  require('./../../general/scripts/test-module')` +
-          `\n// use statements like this^^ for JS passing\n\n`))
-        .pipe(rename('scripts.js'))
-        .pipe(gulp.dest(fldrPath + '/'));
+        gulp.src(`${fldrPath}/${name}-scripts.js`)
+          .pipe(inject.prepend(`// var testModule =  require('./../../general/scripts/test-module')` +
+            `\n// use statements like this^^ for JS passing\n\n`))
+          .pipe(rename(`${name}-scripts.js`))
+          .pipe(gulp.dest(`${fldrPath}/`));
       }
     })
   }
+  // loop through and delete relevant material
   for (var i = 0; i < deleteKeys.length; i++) {
     var name = argv[deleteKeys[i]];
-    pathExists('app/components/'+ name).then(exists =>{
+    pathExists(`app/components/${name}`).then(exists =>{
       if (!exists) {
-        console.log('no component folder for "' + name + '" exists');
+        console.log(`no component folder for "${name}" exists`);
       } else {
-        console.log('removing component: ', name);
-        var fldrPath = 'app/components/' + name;
+        console.log(`removing component: ${name}`);
+        var fldrPath = `app/components/${name}`;
         // remove entire component folder
-        exec('rm -rf ' + fldrPath);
-        // remove component's styleSheet importation from main scss index
-        gulp.src(paths.styles.main)
-        .pipe(inject.replace(`\n@import './../../components/${name}/_styles';`, ''))
-        .pipe(rename('index.scss'))
-        .pipe(gulp.dest(paths.styles.general));
+        exec(`rm -rf ${fldrPath}`);
       }
+      // remove component's styleSheet importation from main scss index
+      gulp.src(paths.styles.main)
+      .pipe(inject.replace(`\n@import './../../components/${name}/_${name}-styles';`, ''))
+      .pipe(rename('index.scss'))
+      .pipe(gulp.dest(paths.styles.general));
     })
   }
 });
@@ -410,80 +416,97 @@ gulp.task(commands.page, function(){
   }
   // loop through and conduct creations
   for (var i = 0; i < createKeys.length; i++) {
+    // check name for illegal characters
+    if (!(/^[A-Za-z0-9\-\_]+$/.test(argv[createKeys[i]]))) {
+      console.log('your name contains illegal characters - aborting');
+      return;
+    }
     var name = argv[createKeys[i]];
-    pathExists('app/pages/'+ name).then(exists =>{
+    pathExists(`app/pages/${name}`).then(exists =>{
       if (exists) {
-        console.log('page folder "' + name + '" already exists!');
+        console.log(`page folder ${name} already exists!`);
       } else {
-        console.log('creating page: ', name);
-        var fldrPath = 'app/pages/' + name;
-        exec('mkdir ' + fldrPath);
-        exec('touch ' + fldrPath + '/index.nunjucks');
-        exec('touch ' + fldrPath + '/scripts.js');
-        exec('touch ' + fldrPath + '/_styles.scss');
+        console.log(`creating page: ${name}`);
+        var fldrPath = `app/pages/${name}`;
+        exec(`mkdir ${fldrPath}`);
+        exec(`touch ${fldrPath}/${name}-index.nunjucks`);
+        exec(`touch ${fldrPath}/${name}-scripts.js`);
+        exec(`touch ${fldrPath}/_${name}-styles.scss`);
         // below we are adding page's styleSheet to importation main scss index
         gulp.src(paths.styles.main)
-        .pipe(inject.after('//!PAGES!', `\n@import './../../pages/${name}/_styles';`))
+        .pipe(inject.after('//!PAGES!', `\n@import './../../pages/${name}/_${name}-styles';`))
         .pipe(rename('index.scss'))
         .pipe(gulp.dest(paths.styles.general));
         // add wrapping div to page's index.nunjucks for navigator
-        gulp.src(fldrPath + '/index.nunjucks')
-        .pipe(inject.prepend(`<!--use this wrapper to keep everything within page!-->` +
-          `\n\n<div id='page-${name}' class="page">\n`))
-        .pipe(inject.append(`\n</div>`))
-        .pipe(rename('index.nunjucks'))
-        .pipe(gulp.dest(fldrPath + '/'));
+        gulp.src(`${fldrPath}/${name}-index.nunjucks`)
+          .pipe(inject.prepend(`<!--use this wrapper to keep everything within page!-->` +
+            `\n\n<div id='page-${name}' class="page">\n`))
+          .pipe(inject.append(`\n</div>`))
+          .pipe(rename(`${name}-index.nunjucks`))
+          .pipe(gulp.dest(`${fldrPath}/`));
         // add our new route to navigator.js
+        var nameKey = name.replace(/-/g, "_");
         gulp.src(paths.scripts.navigator)
-        .pipe(inject.before('//!ROUTES!', `\t${name}: '${name}',\n\t`))
-        .pipe(rename(fileNames.navigator))
-        .pipe(gulp.dest(paths.scripts.navigator.split(fileNames.navigator)[0]));
+          .pipe(inject.before('//!ROUTES!',
+          `\t${nameKey}: {` +
+            `\n\t\t\thash: '${name}',` +
+            `\n\t\t\tdivId: 'page-${name}',` +
+          `\n\t\t},\n\t`))
+          .pipe(rename(fileNames.navigator))
+          .pipe(gulp.dest(paths.scripts.navigator.split(fileNames.navigator)[0]));
         // include new route in nunjucks index
         gulp.src(paths.html.main)
-        .pipe(inject.after('<!--PAGES-->', `\n\t{% include './pages/${name}/index.nunjucks' %}`))
-        .pipe(rename("index.nunjucks"))
-        .pipe(gulp.dest(paths.html.main.split("index.nunjucks")[0]));
+          .pipe(inject.after('<!--PAGES-->', `\n\t{% include './pages/${name}/${name}-index.nunjucks' %}`))
+          .pipe(rename("index.nunjucks"))
+          .pipe(gulp.dest(paths.html.main.split("index.nunjucks")[0]));
         // add wrapper to local SASS file for scoping
-        gulp.src(fldrPath + '/_styles.scss')
-        .pipe(inject.prepend(`// use this wrapper to preserve scope!\n#page-${name} {\n`))
-        .pipe(inject.append(`\n}`))
-        .pipe(rename('_styles.scss'))
-        .pipe(gulp.dest(fldrPath + '/'));
+        gulp.src(`${fldrPath}/_${name}-styles.scss`)
+          .pipe(inject.prepend(`// use this wrapper to preserve scope!\n#page-${name} {\n`))
+          .pipe(inject.append(`\n}`))
+          .pipe(rename(`_${name}-styles.scss`))
+          .pipe(gulp.dest(`${fldrPath}/`));
         // add intro comment to js file
-        gulp.src(fldrPath + '/scripts.js')
-        .pipe(inject.prepend(`// var testModule =  require('./../../general/scripts/test-module')` +
-          `\n// use statements like this^^ for JS passing\n\n`))
-        .pipe(rename('scripts.js'))
-        .pipe(gulp.dest(fldrPath + '/'));
+        gulp.src(`${fldrPath}/${name}-scripts.js`)
+          .pipe(inject.prepend(`// var testModule =  require('./../../general/scripts/test-module')` +
+            `\n// use statements like this^^ for JS passing\n\n`))
+          .pipe(rename(`${name}-scripts.js`))
+          .pipe(gulp.dest(`${fldrPath}/`));
       }
     })
   }
+  // loop through and delete relevant material
   for (var i = 0; i < deleteKeys.length; i++) {
     var name = argv[deleteKeys[i]];
-    pathExists('app/pages/'+ name).then(exists =>{
+    pathExists(`app/pages/${name}`).then(exists =>{
       if (!exists) {
-        console.log('no page folder for "' + name + '" exists');
+        console.log(`no page folder for "${name}" exists`);
       } else {
-        console.log('removing page: ', name);
-        var fldrPath = 'app/pages/' + name;
+        console.log(`removing page: ${name}`);
+        var fldrPath = `app/pages/${name}`;
         // remove entire page folder
-        exec('rm -rf ' + fldrPath);
+        exec(`rm -rf ${fldrPath}`);
         // remove page's styleSheet importation from main scss index
-        gulp.src(paths.styles.main)
-        .pipe(inject.replace(`\n@import './../../pages/${name}/_styles';`, ''))
-        .pipe(rename('index.scss'))
-        .pipe(gulp.dest(paths.styles.general));
-        // remove route to navigator.js
-        gulp.src(paths.scripts.navigator)
-        .pipe(inject.replace(`\t${name}: '${name}',\n\t`, ''))
-        .pipe(rename(fileNames.navigator))
-        .pipe(gulp.dest(paths.scripts.navigator.split(fileNames.navigator)[0]));
-        // delete route html inclusion in nunjucks index
-        gulp.src(paths.html.main)
-        .pipe(inject.replace(`\n\t{% include './pages/${name}/index.nunjucks' %}`, ''))
-        .pipe(rename("index.nunjucks"))
-        .pipe(gulp.dest(paths.html.main.split("index.nunjucks")[0]));
       }
+      gulp.src(paths.styles.main)
+      .pipe(inject.replace(`\n@import './../../pages/${name}/_${name}-styles';`, ''))
+      .pipe(rename('index.scss'))
+      .pipe(gulp.dest(paths.styles.general));
+      // remove route to navigator.js
+      var nameKey = name.replace(/-/g, "_");
+      gulp.src(paths.scripts.navigator)
+      .pipe(inject.replace(
+        `\t${nameKey}: {` +
+          `\n\t\t\thash: '${name}',` +
+          `\n\t\t\tdivId: '${name}-page',` +
+        `\n\t\t},\n\t`
+        , ''))
+      .pipe(rename(fileNames.navigator))
+      .pipe(gulp.dest(paths.scripts.navigator.split(fileNames.navigator)[0]));
+      // delete route html inclusion in nunjucks index
+      gulp.src(paths.html.main)
+      .pipe(inject.replace(`\n\t{% include './pages/${name}/${name}-index.nunjucks' %}`, ''))
+      .pipe(rename("index.nunjucks"))
+      .pipe(gulp.dest(paths.html.main.split("index.nunjucks")[0]));
     })
   }
 });
