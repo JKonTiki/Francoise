@@ -12,10 +12,11 @@
 
 //this (next line) section header is a flag for the gulpfile to insert auto-generated pages. touch with caution!
 //!PAGES!
+@import './../../pages/about/_about-styles';
 @import './../../pages/error/_error-styles';
 @import './../../pages/home/_home-styles';
 
 //this (next line) section header is a flag for the gulpfile to insert auto-generated components. touch with caution!
 //!COMPONENTS!
-@import './../../components/test-page2+=/_test-page2+=-styles';
+@import './../../components/navbar/_navbar-styles';
 @import './../../components/welcome-message/_welcome-message-styles';

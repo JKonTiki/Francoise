@@ -1,6 +1,6 @@
 // use this wrapper to preserve scope!
-#page-home {
-  border: $color-primary 1em solid;
+#page-about {
+  border: $color-success 1em solid;
   text-align: center;
   #welcome-message-component-block{
     @extend %block-container;

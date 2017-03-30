@@ -1,6 +1,7 @@
 <!--use this wrapper to keep everything within page!-->
-<div id="page-home" class="page">
-  <h1>WELCOME TO THE HOME PAGE</h1>
+
+<div id='page-about' class='page'>
+  <h1>WELCOME TO ABOUT PAGE</h1>
   <div id="welcome-message-component-block">
     {% include "components/welcome-message/welcome-message-index.nunjucks" %}
   </div>

@@ -3,5 +3,5 @@
 <!--% include "components/welcome-message/index.nunjucks" %-->
 
 <div id='component-welcome-message' class="component">
-  <h1>I AM COMPONENT</h1>
+  <h1>welcome to my webpage.<br>i am component.</h1>
 </div>

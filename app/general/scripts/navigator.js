@@ -12,9 +12,13 @@
       hash: 'error',
       divId: 'page-error'
     },
+		about: {
+			hash: 'about',
+			divId: 'page-about',
+		},
 	//!ROUTES! (this comment is an important flag for gulpfile, DND!)
   }
-  let hash = window.location.hash;
+  let hash = window.location.href.split("#").splice(1).join('');
 
   window.addEventListener('hashchange', (event)=>{
     let newHash = event.newURL.split('#').splice(1).join('');
@@ -27,8 +31,8 @@
     for (let routeKey in routes){
       if (routes[routeKey].hash === _hash) {
         activePage = document.querySelector(`#${routes[routeKey].divId}`);
+        break;
       }
-      break;
     }
     // clear all routes
     for (let routeKey in routes){

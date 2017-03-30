@@ -1,0 +1,9 @@
+// use this wrapper to preserve scope!
+#component-navbar {
+  height: 5em;
+  width: 25em;
+  border: $color-info 1em solid;
+  a {
+    margin: 0 2em;
+  }
+}

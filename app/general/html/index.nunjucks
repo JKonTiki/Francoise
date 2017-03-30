@@ -2,6 +2,7 @@
 {% block content %}
 
   <!--PAGES-->
+	{% include './pages/about/about-index.nunjucks' %}
 	{% include './pages/error/error-index.nunjucks' %}
   {% include "./pages/home/home-index.nunjucks" %}
 

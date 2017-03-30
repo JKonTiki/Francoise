@@ -356,8 +356,8 @@ gulp.task(commands.component, function(){
         gulp.src(`${fldrPath}/${name}-index.nunjucks`)
           .pipe(inject.prepend(`<!--use this wrapper to keep everything within component!-->` +
             `\n<!--be sure to copy the following tag (wrapped with curly braces {}) to any pages where you this comp. to show up-->` +
-            `\n<!--% include "components/${name}/index.nunjucks" %-->` +
-            `\n<div id='component-${name}' class="component">\n`))
+            `\n<!--% include "components/${name}/${name}-index.nunjucks" %-->` +
+            `\n<div id='component-${name}' class='component'>\n`))
           .pipe(inject.append(`\n</div>`))
           .pipe(rename(`${name}-index.nunjucks`))
           .pipe(gulp.dest(`${fldrPath}/`));
@@ -440,7 +440,7 @@ gulp.task(commands.page, function(){
         // add wrapping div to page's index.nunjucks for navigator
         gulp.src(`${fldrPath}/${name}-index.nunjucks`)
           .pipe(inject.prepend(`<!--use this wrapper to keep everything within page!-->` +
-            `\n\n<div id='page-${name}' class="page">\n`))
+            `\n\n<div id='page-${name}' class='page'>\n`))
           .pipe(inject.append(`\n</div>`))
           .pipe(rename(`${name}-index.nunjucks`))
           .pipe(gulp.dest(`${fldrPath}/`));

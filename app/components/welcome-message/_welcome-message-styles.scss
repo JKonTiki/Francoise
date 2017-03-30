@@ -1,7 +1,9 @@
 // use this wrapper to preserve scope!
 #component-welcome-message {
+  border: $color-white 1em solid;
+  width: 50%;
   h1 {
-    color: $color-primary;
+    color: $color-code;
     font-size: 4rem;
   }
 }
