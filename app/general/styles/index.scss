@@ -11,9 +11,9 @@
 @import 'base/_general';
 
 //this (next line) section header is a flag for the gulpfile to insert auto-generated pages. touch with caution!
-//pages
+//!PAGES!
 @import './../../pages/home/_styles';
 
 //this (next line) section header is a flag for the gulpfile to insert auto-generated components. touch with caution!
-//components
+//!COMPONENTS!
 @import './../../components/board-interactive/_styles';

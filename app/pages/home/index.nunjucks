@@ -1,1 +1,4 @@
-{% include "components/board-interactive/index.nunjucks" %}
+<div id="page-home" class="page">
+  <h1>WELCOME HOME</h1>
+  {% include "components/board-interactive/index.nunjucks" %}
+</div>

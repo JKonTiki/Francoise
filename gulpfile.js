@@ -38,6 +38,7 @@ var autoPrefixBrowserList = [
 
 var fileNames = {
   html: 'index.html',
+  navigator: 'navigator.js',
   scripts: 'scripts.js',
   styles: 'styles.css',
 };
@@ -59,8 +60,9 @@ var paths = {
   },
   scripts: {
     all:['app/pages/**/*.js', 'app/components/**/*.js', 'app/general/scripts/*.js',],
+    general: 'app/general/scripts/',
     index: 'app/' + fileNames.scripts,
-    tempConcat: 'tmp/allConcat.js',
+    navigator: 'app/general/scripts/navigator.js',
   },
   styles: {
     all: ['app/**/*.scss', 'app/**/*.sass'],
@@ -342,7 +344,7 @@ gulp.task(commands.component, function(){
         exec('touch ' + fldrPath + '/_styles.scss');
         // below we are adding component's styleSheet to importation main scss index
         gulp.src(paths.styles.index)
-        .pipe(inject.after('//components', `\n@import './../../components/${name}/_styles';`))
+        .pipe(inject.after('//!COMPONENTS!', `\n@import './../../components/${name}/_styles';`))
         .pipe(rename('index.scss'))
         .pipe(gulp.dest(paths.styles.general));
       }
@@ -400,9 +402,25 @@ gulp.task(commands.page, function(){
         exec('touch ' + fldrPath + '/_styles.scss');
         // below we are adding page's styleSheet to importation main scss index
         gulp.src(paths.styles.main)
-        .pipe(inject.after('//pages', `\n@import './../../pages/${name}/_styles';`))
+        .pipe(inject.after('//!PAGES!', `\n@import './../../pages/${name}/_styles';`))
         .pipe(rename('index.scss'))
         .pipe(gulp.dest(paths.styles.general));
+        // add wrapping div to page's index.nunjucks for navigator
+        gulp.src(fldrPath + '/index.nunjucks')
+        .pipe(inject.prepend(`<div id='page-${name}' class="page">\n`))
+        .pipe(inject.append(`\n</div>`))
+        .pipe(rename('index.nunjucks'))
+        .pipe(gulp.dest(fldrPath + '/'));
+        // add our new route to navigator.js
+        gulp.src(paths.scripts.navigator)
+        .pipe(inject.before('//!ROUTES!', `\t${name}: '${name}',\n\t`))
+        .pipe(rename(fileNames.navigator))
+        .pipe(gulp.dest(paths.scripts.navigator.split(fileNames.navigator)[0]));
+        // include new route in nunjucks index
+        gulp.src(paths.html.main)
+        .pipe(inject.after('<!--PAGES-->', `\n\t{% include './pages/${name}/index.nunjucks' %}`))
+        .pipe(rename("index.nunjucks"))
+        .pipe(gulp.dest(paths.html.main.split("index.nunjucks")[0]));
       }
     })
   }
@@ -421,6 +439,16 @@ gulp.task(commands.page, function(){
         .pipe(inject.replace(`\n@import './../../pages/${name}/_styles';`, ''))
         .pipe(rename('index.scss'))
         .pipe(gulp.dest(paths.styles.general));
+        // remove route to navigator.js
+        gulp.src(paths.scripts.navigator)
+        .pipe(inject.replace(`\t${name}: '${name}',\n\t`, ''))
+        .pipe(rename(fileNames.navigator))
+        .pipe(gulp.dest(paths.scripts.navigator.split(fileNames.navigator)[0]));
+        // delete route html inclusion in nunjucks index
+        gulp.src(paths.html.main)
+        .pipe(inject.replace(`\n\t{% include './pages/${name}/index.nunjucks' %}`, ''))
+        .pipe(rename("index.nunjucks"))
+        .pipe(gulp.dest(paths.html.main.split("index.nunjucks")[0]));
       }
     })
   }
@@ -436,10 +464,10 @@ gulp.task('default',
     commands.compile.styles,
   ], function() {
     //a list of watchers, so it will watch all of the following files waiting for changes
-    gulp.watch(paths.scripts.all, [commands.compile.scripts]);
-    gulp.watch(paths.styles.all, [commands.compile.styles]);
-    gulp.watch(paths.images.origin, [commands.images]);
-    gulp.watch(paths.html.all, [commands.compile.html, commands.htmlReload]);
+    gulp.watch(paths.scripts.all, [commands.browserSync, commands.compile.scripts]);
+    gulp.watch(paths.styles.all, [commands.browserSync, commands.compile.styles]);
+    gulp.watch(paths.images.origin, [commands.browserSync, commands.images]);
+    gulp.watch(paths.html.all, [commands.browserSync, commands.compile.html, commands.htmlReload]);
 });
 
 //this is our deployment task, it will set everything for deployment-ready files

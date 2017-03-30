@@ -1,6 +1,7 @@
 {% extends "./general/html/layout.nunjucks" %}
 {% block content %}
 
+  <!--PAGES-->
   {% include "./pages/home/index.nunjucks" %}
 
 {% endblock %}

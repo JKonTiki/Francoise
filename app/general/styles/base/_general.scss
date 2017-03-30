@@ -1,3 +1,5 @@
-h1 {
-  color: $color-primary;
+// for navigator
+.hidden {
+  display: 'none';
+  background-color: $color-danger;
 }
