@@ -1,3 +1,7 @@
-<div id='component-tester' class="component">
-  <h1>WELCOME TO THE COMPONENT WITHIN THE HOME PAGE</h1>
+<!--use this wrapper to keep everything within component!-->
+<!--be sure to copy the following tag (wrapped with curly braces {}) to any pages where you this comp. to show up-->
+<!--% include "components/welcome-message/index.nunjucks" %-->
+
+<div id='component-welcome-message' class="component">
+  <h1>I AM COMPONENT</h1>
 </div>

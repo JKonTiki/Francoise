@@ -349,15 +349,24 @@ gulp.task(commands.component, function(){
         .pipe(gulp.dest(paths.styles.general));
         // add wrapping div to component's index.nunjucks for styles
         gulp.src(fldrPath + '/index.nunjucks')
-        .pipe(inject.prepend(`<div id='component-${name}' class="component">\n`))
+        .pipe(inject.prepend(`<!--use this wrapper to keep everything within component!-->` +
+          `\n<!--be sure to copy the following tag (wrapped with curly braces {}) to any pages where you this comp. to show up-->` +
+          `\n<!--% include "components/${name}/index.nunjucks" %-->` +
+          `\n<div id='component-${name}' class="component">\n`))
         .pipe(inject.append(`\n</div>`))
         .pipe(rename('index.nunjucks'))
         .pipe(gulp.dest(fldrPath + '/'));
         // add wrapper to local SASS file for scoping
         gulp.src(fldrPath + '/_styles.scss')
-        .pipe(inject.prepend(`#component-${name} {\n`))
+        .pipe(inject.prepend(`// use this wrapper to preserve scope!\n#component-${name} {\n`))
         .pipe(inject.append(`\n}`))
         .pipe(rename('_styles.scss'))
+        .pipe(gulp.dest(fldrPath + '/'));
+        // add intro comment to js file
+        gulp.src(fldrPath + '/scripts.js')
+        .pipe(inject.prepend(`// var testModule =  require('./../../general/scripts/test-module')` +
+          `\n// use statements like this^^ for JS passing\n\n`))
+        .pipe(rename('scripts.js'))
         .pipe(gulp.dest(fldrPath + '/'));
       }
     })
@@ -419,7 +428,8 @@ gulp.task(commands.page, function(){
         .pipe(gulp.dest(paths.styles.general));
         // add wrapping div to page's index.nunjucks for navigator
         gulp.src(fldrPath + '/index.nunjucks')
-        .pipe(inject.prepend(`<div id='page-${name}' class="page">\n`))
+        .pipe(inject.prepend(`<!--use this wrapper to keep everything within page!-->` +
+          `\n\n<div id='page-${name}' class="page">\n`))
         .pipe(inject.append(`\n</div>`))
         .pipe(rename('index.nunjucks'))
         .pipe(gulp.dest(fldrPath + '/'));
@@ -435,9 +445,15 @@ gulp.task(commands.page, function(){
         .pipe(gulp.dest(paths.html.main.split("index.nunjucks")[0]));
         // add wrapper to local SASS file for scoping
         gulp.src(fldrPath + '/_styles.scss')
-        .pipe(inject.prepend(`#page-${name} {\n`))
+        .pipe(inject.prepend(`// use this wrapper to preserve scope!\n#page-${name} {\n`))
         .pipe(inject.append(`\n}`))
         .pipe(rename('_styles.scss'))
+        .pipe(gulp.dest(fldrPath + '/'));
+        // add intro comment to js file
+        gulp.src(fldrPath + '/scripts.js')
+        .pipe(inject.prepend(`// var testModule =  require('./../../general/scripts/test-module')` +
+          `\n// use statements like this^^ for JS passing\n\n`))
+        .pipe(rename('scripts.js'))
         .pipe(gulp.dest(fldrPath + '/'));
       }
     })

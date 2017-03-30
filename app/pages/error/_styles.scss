@@ -1,0 +1,7 @@
+// use this wrapper to preserve scope!
+#page-error {
+  h1 {
+    color: $color-danger;
+    font-size: 3rem;
+  }
+}

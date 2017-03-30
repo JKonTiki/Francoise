@@ -1,6 +1,7 @@
-#component-tester {
+// use this wrapper to preserve scope!
+#component-welcome-message {
   h1 {
     color: $color-primary;
-    font-size: 5rem;
-  }  
+    font-size: 4rem;
+  }
 }
