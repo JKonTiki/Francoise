@@ -16,6 +16,10 @@
 			hash: 'about',
 			divId: 'page-about',
 		},
+		test: {
+			hash: 'test',
+			divId: 'page-test',
+		},
 	//!ROUTES! (this comment is an important flag for gulpfile, DND!)
   }
   let hash = window.location.href.split("#").splice(1).join('');
