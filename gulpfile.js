@@ -309,7 +309,7 @@ gulp.task(commands.clean, function() {
 
 gulp.task(commands.clearExample, [commands.clean], function() {
   // beware looking further into the bowels of this custom cleanse, ye be warned
-  require('./gulpFsTasks.js').cleanExApp();
+  require('./gulpFsTasks.js').cleanExApp(paths);
 });
 
 //create folders using shell

@@ -16,7 +16,7 @@ _Je suis là, devant toi, toujours la même_
 * Run `npm install` to download dependencies
 * Launch project from the command line with `gulp`
 
-* To clear the example-app, run `gulp clear-example`. This is not yet tethered necessarily to the actual example-app, so be very careful with this in the future!
+* To clear the example-app, run `gulp clear-example`. This is not yet perfectly tethered to the actual example-app, so be very careful with this one
 
 
 ## Features

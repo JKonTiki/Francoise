@@ -223,7 +223,7 @@ var deletePage = function(name, paths, fileNames){
   .pipe(gulp.dest(paths.html.main.split("index.njk")[0]));
 }
 
-var cleanExApp = function(){
+var cleanExApp = function(paths){
   console.log('this may take a moment');
     pathExists(`app/components/welcome-message`).then(exists =>{
     if (!exists) {
@@ -248,6 +248,7 @@ var cleanExApp = function(){
                     exec(`rm ${fldrPath}/${pageName}-index.njk`).then(()=>{
                       exec(`touch ${fldrPath}/${pageName}-index.njk`).then(()=>{
                         exec(`touch ${fldrPath}/_${pageName}-styles.scss`).then(()=>{
+                          repopulateClearedContent(fldrPath, pageName, paths);
                           pageName = 'error';
                           fldrPath = `app/pages/${pageName}`;
                           console.log('clearing error page content');
@@ -255,23 +256,7 @@ var cleanExApp = function(){
                             exec(`rm ${fldrPath}/${pageName}-index.njk`).then(()=>{
                               exec(`touch ${fldrPath}/${pageName}-index.njk`).then(()=>{
                                 exec(`touch ${fldrPath}/_${pageName}-styles.scss`).then(()=>{
-                                  gulp.src(paths.html.general + '/layout.njk')
-                                    .pipe(inject.replace(`{% include "components/navbar/navbar-index.njk" %}`, ''))
-                                    .pipe(rename('layout.njk'))
-                                    .pipe(gulp.dest(paths.html.general));
-                                  // include new route in nunjucks index
-                                  gulp.src(`${fldrPath}/${pageName}-index.njk`)
-                                    .pipe(inject.prepend(`<!--use this wrapper to keep everything within page!-->` +
-                                      `\n<div id='page-${pageName}' class='page'>\n`))
-                                    .pipe(inject.append(`\n</div>`))
-                                    .pipe(rename(`${pageName}-index.njk`))
-                                    .pipe(gulp.dest(`${fldrPath}/`));
-                                  // add wrapper to local SASS file for scoping
-                                  gulp.src(`${fldrPath}/_${pageName}-styles.scss`)
-                                    .pipe(inject.prepend(`// use this wrapper to preserve scope!\n#page-${pageName} {\n`))
-                                    .pipe(inject.append(`\n}`))
-                                    .pipe(rename(`_${pageName}-styles.scss`))
-                                    .pipe(gulp.dest(`${fldrPath}/`));
+                                  repopulateClearedContent(fldrPath, pageName, paths);
                                 });
                               });
                             });
@@ -289,6 +274,26 @@ var cleanExApp = function(){
     });
   });
   // how about that flying V, huh? DUCKS FLY TOGETHER!
+}
+
+var repopulateClearedContent = function(fldrPath, pageName, paths){
+  gulp.src(paths.html.general + '/layout.njk')
+    .pipe(inject.replace(`{% include "components/navbar/navbar-index.njk" %}`, ''))
+    .pipe(rename('layout.njk'))
+    .pipe(gulp.dest(paths.html.general));
+  // include new route in nunjucks index
+  gulp.src(`${fldrPath}/${pageName}-index.njk`)
+    .pipe(inject.prepend(`<!--use this wrapper to keep everything within page!-->` +
+      `\n<div id='page-${pageName}' class='page'>\n`))
+    .pipe(inject.append(`\n</div>`))
+    .pipe(rename(`${pageName}-index.njk`))
+    .pipe(gulp.dest(`${fldrPath}/`));
+  // add wrapper to local SASS file for scoping
+  gulp.src(`${fldrPath}/_${pageName}-styles.scss`)
+    .pipe(inject.prepend(`// use this wrapper to preserve scope!\n#page-${pageName} {\n`))
+    .pipe(inject.append(`\n}`))
+    .pipe(rename(`_${pageName}-styles.scss`))
+    .pipe(gulp.dest(`${fldrPath}/`));
 }
 
 exports.cleanExApp = cleanExApp;
