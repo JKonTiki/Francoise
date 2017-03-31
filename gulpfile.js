@@ -106,6 +106,7 @@ var commands = {
   lint: 'lint',
   component: 'component',
   page: 'page',
+  clearExample: 'clear-example',
 };
 
 
@@ -288,6 +289,58 @@ gulp.task(commands.clean, function() {
   exec('rm ' + paths.scripts.index);
   exec('rm ' + paths.styles.index);
   exec('rm ' + paths.scripts.index + '.map');
+});
+
+gulp.task(commands.clearExample, [commands.clean], function() {
+  pathExists(`app/components/`).then(exists =>{
+    if (exists) {
+      exec('rm -rf app/components');
+      exec('mkdir app/components');
+    }
+  });
+  pathExists(`app/pages/about`).then(exists =>{
+    if (exists) {
+      exec('rm -rf app/pages/about');
+    }
+  });
+  pathExists(`app/pages/about`).then(exists =>{
+    if (exists) {
+      exec('rm app/general/styles/abstracts/_interfaces.scss');
+      exec('touch app/general/styles/abstracts/_interfaces.scss');
+    }
+  });
+  pathExists(`app/pages/about`).then(exists =>{
+    if (exists) {
+      exec('rm app/general/styles/base/_general.scss');
+      exec('touch app/general/styles/base/_general.scss');
+    }
+  });
+  var pagesToReset = ['error', 'home'];
+  for (var i = 0; i < pagesToReset.length; i++) {
+    var pageName = pagesToReset[i];
+    var fldrPath = `app/pages/${pageName}`;
+    pathExists(fldrPath).then(exists =>{
+      if (exists) {
+        exec(`rm ${fldrPath}/_${pageName}-styles.scss`);
+        exec(`rm ${fldrPath}/${pageName}-index.njk`);
+        exec(`touch app/pages/${pageName}-index.njk`);
+        exec(`touch app/pages/_${pageName}-styles.scss`);
+        // include new route in nunjucks index
+        gulp.src(`${fldrPath}/${pageName}-index.njk`)
+          .pipe(inject.prepend(`<!--use this wrapper to keep everything within component!-->` +
+            `\n<div class='component-${pageName} component'>\n`))
+          .pipe(inject.append(`\n</div>`))
+          .pipe(rename(`${pageName}-index.njk`))
+          .pipe(gulp.dest(`${fldrPath}/`));
+        // add wrapper to local SASS file for scoping
+        gulp.src(`${fldrPath}/_${pageName}-styles.scss`)
+          .pipe(inject.prepend(`// use this wrapper to preserve scope!\n#page-${pageName} {\n`))
+          .pipe(inject.append(`\n}`))
+          .pipe(rename(`_${pageName}-styles.scss`))
+          .pipe(gulp.dest(`${fldrPath}/`));
+        }
+    });
+  }
 });
 
 //create folders using shell

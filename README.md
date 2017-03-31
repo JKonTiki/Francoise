@@ -1,6 +1,6 @@
 # Francoise
 
-Bonjour there, I'm a lightweight Gulp boilerplate for component-based sing-page-applications that live completely on the client. I try not to be overly opinionated, so if you'd like to just use me to write standard HTML, CSS, & JS, then _ma cherie_, I'm there for you.
+Hi there, I'm a lightweight Gulp boilerplate for component-based sing-page-applications that live completely on the client. I try not to be overly opinionated, so if you'd like to just use me to write standard HTML, CSS, & JS, then _ma cherie_, I'm there for you.
 
 At the very least, I offer simple/ergonomic build tools and a neat file structure that will make organizing your code _tellement facile_. At your disposal you'll also have SASS styling, Nunjucks templating, and a handy navigator for rendering through different pages.
 
@@ -61,7 +61,7 @@ Francoise/
 |—— build/             /* for production. use 'gulp deploy' to compile */
 |   |—— assets/
 |   |   |—— fonts/
-|   |   |—— images/    /* our build process will compress images */
+|   |   |—— images/    /* build process will compress images */
 |   |—— index.html
 |   |—— scripts.js     /* this will be minified */
 |   |—— styles.css     /* this will be minified */
@@ -98,6 +98,6 @@ See `app/general/scripts/navigator.js` for routing config.
 
 ## Credits
 
-Thanks to [ryanbenson](https://github.com/ryanbenson/Harvest) for offering a boilerplate gulpfile for my boilerplate gulpfile and [cferdinandi](https://github.com/cferdinandi/gulp-boilerplate) for good ideas. More info about Francoise project [here](https://www.youtube.com/watch?v=0M4LLlPA68o).
+Thanks to [ryanbenson](https://github.com/ryanbenson/Harvest) for offering a boilerplate gulpfile for my boilerplate gulpfile and [cferdinandi](https://github.com/cferdinandi/gulp-boilerplate) for good ideas. More info about Francoise [here](https://www.youtube.com/watch?v=_V-b8QIYOpM).
 
 This software is protected under the MIT license. Copyright (c) 2017 Jeremy Fryd.

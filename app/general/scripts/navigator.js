@@ -44,6 +44,7 @@
     }
     if (!activePage) {
       // if no page exists for that hash, show error page
+
       activePage = document.querySelector(`#${routes.error.divId}`);
     }
     // show hash's route if it not already shown
