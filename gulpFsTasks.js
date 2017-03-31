@@ -164,30 +164,32 @@ var cleanExApp = function(paths){
           .pipe(inject.replace(`{% include "components/navbar/navbar-index.njk" %}`, ''))
           .pipe(rename('layout.njk'))
           .pipe(gulp.dest(paths.html.general));
-        console.log('clearing about page');
-        exec('gulp page -d about').then(()=>{
-          console.log('clearing interfaces');
-          exec('rm app/general/styles/abstracts/_interfaces.scss').then(()=>{
-            exec('touch app/general/styles/abstracts/_interfaces.scss').then(()=>{
-              console.log('clearing general.scss');
-              exec('rm app/general/styles/base/_general.scss').then(()=>{
-                exec('touch app/general/styles/base/_general.scss').then(()=>{
-                  var name = 'home';
-                  var fldrPath = `app/pages/${name}`;
-                  console.log('clearing home page content');
-                  exec(`rm ${fldrPath}/_${name}-styles.scss`).then(()=>{
-                    exec(`rm ${fldrPath}/${name}-index.njk`).then(()=>{
-                      exec(`touch ${fldrPath}/${name}-index.njk`).then(()=>{
-                        exec(`touch ${fldrPath}/_${name}-styles.scss`).then(()=>{
-                          repopulateClearedContent(fldrPath, name, paths);
-                          name = 'error';
-                          fldrPath = `app/pages/${name}`;
-                          console.log('clearing error page content');
-                          exec(`rm ${fldrPath}/_${name}-styles.scss`).then(()=>{
-                            exec(`rm ${fldrPath}/${name}-index.njk`).then(()=>{
-                              exec(`touch ${fldrPath}/${name}-index.njk`).then(()=>{
-                                exec(`touch ${fldrPath}/_${name}-styles.scss`).then(()=>{
-                                  repopulateClearedContent(fldrPath, name, paths);
+        exec('rm app/assets/images/francoise.jpg').then(()=>{
+          console.log('clearing about page');
+          exec('gulp page -d about').then(()=>{
+            console.log('clearing interfaces');
+            exec('rm app/general/styles/abstracts/_interfaces.scss').then(()=>{
+              exec('touch app/general/styles/abstracts/_interfaces.scss').then(()=>{
+                console.log('clearing general.scss');
+                exec('rm app/general/styles/base/_general.scss').then(()=>{
+                  exec('touch app/general/styles/base/_general.scss').then(()=>{
+                    var name = 'home';
+                    var fldrPath = `app/pages/${name}`;
+                    console.log('clearing home page content');
+                    exec(`rm ${fldrPath}/_${name}-styles.scss`).then(()=>{
+                      exec(`rm ${fldrPath}/${name}-index.njk`).then(()=>{
+                        exec(`touch ${fldrPath}/${name}-index.njk`).then(()=>{
+                          exec(`touch ${fldrPath}/_${name}-styles.scss`).then(()=>{
+                            repopulateClearedContent(fldrPath, name, paths);
+                            name = 'error';
+                            fldrPath = `app/pages/${name}`;
+                            console.log('clearing error page content');
+                            exec(`rm ${fldrPath}/_${name}-styles.scss`).then(()=>{
+                              exec(`rm ${fldrPath}/${name}-index.njk`).then(()=>{
+                                exec(`touch ${fldrPath}/${name}-index.njk`).then(()=>{
+                                  exec(`touch ${fldrPath}/_${name}-styles.scss`).then(()=>{
+                                    repopulateClearedContent(fldrPath, name, paths);
+                                  });
                                 });
                               });
                             });
