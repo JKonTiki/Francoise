@@ -16,12 +16,14 @@ _Je suis là, devant toi, toujours la même_
 * Run `npm install` to download dependencies
 * Launch project from the command line with `gulp`
 
+
 * To clear the example-app, run `gulp clear-example`. This is not yet perfectly tethered to the actual example-app, so be very careful with this one
 
 
 ## Features
 
 I use [Nunjucks](https://github.com/mozilla/nunjucks), [SASS](http://sass-lang.com/), and [Browserify](http://browserify.org/) to compile modularizable HTML, CSS, and JavaScript respectively. The [build process](https://github.com/JKonTiki/Francoise/blob/master/gulpfile.js) also watches files for hot reloading, lints your JS, and uses SourceMaps for accurate debugging.
+
 
 ### Architecture
 
@@ -66,13 +68,15 @@ Francoise/
 |   |   |—— images/    /* build process will compress images */
 |   |—— index.html
 |   |—— scripts.js     /* this will be minified */
-|   |—— styles.css     /* this will be minified */
+|   |—— styles.css     /* ^ditto */
 |—— .gitignore
 |—— gulpfile.js
+|—— gulpFsTasks.js     /* moves file system logic out of gulpfile */
 |—— LICENSE
 |—— package.json
 |—— README.md
 ```
+
 
 ### Generating a New Component/Page
 
@@ -90,6 +94,7 @@ In addition, new Pages will:
 * Automatically adds new HTML to our Nunjucks index (do this manually for components). Our navigator hides all pages less the one actively routed to.
 
 Deletions basically reverse engineer this process.
+
 
 ### Configuration
 

@@ -211,7 +211,7 @@ var deletePage = function(name, paths, fileNames){
   .pipe(inject.replace(
     `\t${nameKey}: {` +
       `\n\t\t\thash: '${name}',` +
-      `\n\t\t\tdivId: '${name}-page',` +
+      `\n\t\t\tdivId: 'page-${name}',` +
     `\n\t\t},\n\t`
     , ''))
   .pipe(rename(fileNames.navigator))
