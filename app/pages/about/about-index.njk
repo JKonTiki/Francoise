@@ -1,8 +1,10 @@
+{% import "components/welcome-message/welcome-message-index.njk" as welcomeMessage %}
+
 <!--use this wrapper to keep everything within page!-->
 
 <div id='page-about' class='page'>
   <h1>WELCOME TO ABOUT PAGE</h1>
   <div id="welcome-message-component-block">
-    {% include "components/welcome-message/welcome-message-index.njk" %}
+    {{welcomeMessage.getPage('ABOUT_PAGE')}}
   </div>
 </div>

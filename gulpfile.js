@@ -333,7 +333,7 @@ gulp.task(commands.component, function(){
   for (var i = 0; i < createKeys.length; i++) {
     // check name for illegal characters
     if (!(/^[A-Za-z0-9\-\_]+$/.test(argv[createKeys[i]]))) {
-      console.log('your name contains illegal characters - aborting');
+      console.log(`${argv[createKeys[i]]} contains illegal characters - aborting`);
       return;
     }
     var name = argv[createKeys[i]];
@@ -355,9 +355,7 @@ gulp.task(commands.component, function(){
         // add wrapping div to component's index.njk for styles
         gulp.src(`${fldrPath}/${name}-index.njk`)
           .pipe(inject.prepend(`<!--use this wrapper to keep everything within component!-->` +
-            `\n<!--be sure to copy the following tag (wrapped with curly braces {}) to any pages where you this comp. to show up-->` +
-            `\n<!--% include "components/${name}/${name}-index.njk" %-->` +
-            `\n<div id='component-${name}' class='component'>\n`))
+            `\n<div class='component-${name} component'>\n`))
           .pipe(inject.append(`\n</div>`))
           .pipe(rename(`${name}-index.njk`))
           .pipe(gulp.dest(`${fldrPath}/`));
@@ -418,7 +416,7 @@ gulp.task(commands.page, function(){
   for (var i = 0; i < createKeys.length; i++) {
     // check name for illegal characters
     if (!(/^[A-Za-z0-9\-\_]+$/.test(argv[createKeys[i]]))) {
-      console.log('your name contains illegal characters - aborting');
+      console.log(`${argv[createKeys[i]]} contains illegal characters - aborting`);
       return;
     }
     var name = argv[createKeys[i]];
@@ -477,6 +475,10 @@ gulp.task(commands.page, function(){
   // loop through and delete relevant material
   for (var i = 0; i < deleteKeys.length; i++) {
     var name = argv[deleteKeys[i]];
+    if (name === "error" || name === "home") {
+      console.log("cannot auto-delete 'error' or 'home' pages. aborting command.");
+      return;
+    }
     pathExists(`app/pages/${name}`).then(exists =>{
       if (!exists) {
         console.log(`no page folder for "${name}" exists`);

@@ -2,6 +2,8 @@
 <!--be sure to copy the following tag (wrapped with curly braces {}) to any pages where you this comp. to show up-->
 <!--% include "components/welcome-message/index.nunjucks" %-->
 
-<div id='component-welcome-message' class="component">
-  <h1>welcome to my webpage.<br>i am component.</h1>
-</div>
+{% macro getPage(pageName) %}
+  <div class='component-welcome-message component'>
+    <h1>hello<br>i am component in page<br>{{ pageName }} <-- is data being passed down to me</h1>
+  </div>
+{% endmacro %}
