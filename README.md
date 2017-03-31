@@ -1,6 +1,6 @@
 # Francoise
 
-Hi there, I'm a lightweight Gulp boilerplate for component-based sing-page-applications that live completely on the client. I try not to be overly opinionated, so if you'd like to just use me to write standard HTML, CSS, & JS, then _ma cherie_, I'm there for you.
+Hey there, I'm a lightweight Gulp boilerplate for component-based sing-page-applications that live completely on the client. I try not to be overly opinionated, so if you'd like to just use me to write standard HTML, CSS, & JS, then _ma cherie_, I'm there for you.
 
 At the very least, I offer simple/ergonomic build tools and a neat file structure that will make organizing your code _tellement facile_. At your disposal you'll also have SASS styling, Nunjucks templating, and a handy navigator for rendering through different pages.
 
@@ -15,6 +15,8 @@ _Je suis là, devant toi, toujours la même_
 * Switch into the project directory `cd Francoise`
 * Run `npm install` to download dependencies
 * Launch project from the command line with `gulp`
+
+* To clear the example-app, run `gulp clear-example`. This is not yet tethered necessarily to the actual example-app, so be very careful with this in the future!
 
 
 ## Features
