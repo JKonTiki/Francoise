@@ -4,6 +4,7 @@
   "description": "promettez-moi d'être bien sage",
   "dependencies": {
     "browserify": "^14.1.0",
+    "child-process-promise": "^2.2.1",
     "lodash": "^4.17.4"
   },
   "license": "MIT",

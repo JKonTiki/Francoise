@@ -6,7 +6,7 @@ var browserify = require('browserify');
 var browserSync = require('browser-sync');
 var buffer = require('vinyl-buffer');
 var concat = require('gulp-concat');
-var exec = require('child_process').exec;
+var exec = require('child-process-promise').exec;
 var fs = require('fs');
 var globby = require('globby');
 var gulp = require('gulp');
@@ -72,6 +72,7 @@ var paths = {
   },
   html: {
     all: ['app/pages/**/*.html', 'app/components/**/*.html','app/**/*.njk'],
+    general: 'app/general/html',
     index: 'app/' + fileNames.html,
     main: 'app/general/html/index.njk',
   },
@@ -284,66 +285,71 @@ gulp.task(commands.deploy.fonts, function() {
 // GENERAL
 //cleans our build directory in case things got deleted
 gulp.task(commands.clean, function() {
-  exec('rm -rf build');
-  exec('rm ' + paths.html.index);
-  exec('rm ' + paths.scripts.index);
-  exec('rm ' + paths.styles.index);
-  exec('rm ' + paths.scripts.index + '.map');
+  exec('rm -rf build')
+    .catch(function(err){
+      console.log('no file to clean just yet');
+    });
+  exec('rm ' + paths.html.index)
+    .catch(function(err){
+      console.log('no file to clean just yet');
+    });
+  exec('rm ' + paths.scripts.index)
+    .catch(function(err){
+      console.log('no file to clean just yet');
+    });
+  exec('rm ' + paths.styles.index)
+    .catch(function(err){
+      console.log('no file to clean just yet');
+    });
+  exec('rm ' + paths.scripts.index + '.map')
+    .catch(function(err){
+      console.log('no file to clean just yet');
+    });
 });
 
 gulp.task(commands.clearExample, [commands.clean], function() {
-  pathExists(`app/components/`).then(exists =>{
-    if (exists) {
-      console.log('clearing components');
-      exec('rm -rf app/components');
-      exec('mkdir app/components');
+  // we are just using welcome-message component as a flag here, should be something more reliable going forth
+  pathExists(`app/components/welcome-message`).then(exists =>{
+    if (!exists) {
+      return;
     }
-  });
-  pathExists(`app/pages/about`).then(exists =>{
-    if (exists) {
-      console.log('clearing about page');
-      exec('rm -rf app/pages/about');
-    }
-  });
-  pathExists(`app/general/styles/abstracts`).then(exists =>{
-    if (exists) {
-      console.log('clearing interfaces.scss');
-      exec('rm app/general/styles/abstracts/_interfaces.scss');
-      exec('touch app/general/styles/abstracts/_interfaces.scss');
-    }
-  });
-  pathExists(`app/general/styles/base`).then(exists =>{
-    if (exists) {
-      console.log('clearing general.scss');
-      exec('rm app/general/styles/base/_general.scss');
-      exec('touch app/general/styles/base/_general.scss');
-    }
-  });
-  pathExists(`app/pages`).then(exists =>{
+    console.log('clearing components');
+    exec('gulp component -d welcome-message');
+    exec('gulp component -d navbar');
+    gulp.src(paths.html.general + '/layout.njk')
+      .pipe(inject.replace(`{% include "components/navbar/navbar-index.njk" %}`, ''))
+      .pipe(rename('layout.njk'))
+      .pipe(gulp.dest(paths.html.general));
+    console.log('clearing about page');
+    exec('gulp page -d about');
+    console.log('clearing interfaces.scss');
+    exec('rm app/general/styles/abstracts/_interfaces.scss');
+    exec('touch app/general/styles/abstracts/_interfaces.scss');
+    console.log('clearing general.scss');
+    exec('rm app/general/styles/base/_general.scss');
+    exec('touch app/general/styles/base/_general.scss');
     var pagesToReset = ['home', 'error'];
-    if (exists) {
-      for (var i = 0; i < pagesToReset.length; i++) {
-        var pageName = pagesToReset[i];
-        var fldrPath = `app/pages/${pageName}`;
-          console.log('clearing out content of', pageName);
-          exec(`rm ${fldrPath}/_${pageName}-styles.scss`);
-          exec(`rm ${fldrPath}/${pageName}-index.njk`);
-          exec(`touch ${fldrPath}/${pageName}-index.njk`);
-          exec(`touch ${fldrPath}/_${pageName}-styles.scss`);
-          // include new route in nunjucks index
-          gulp.src(`${fldrPath}/${pageName}-index.njk`)
-            .pipe(inject.prepend(`<!--use this wrapper to keep everything within page!-->` +
-              `\n<div class='page-${pageName} page'>\n`))
-            .pipe(inject.append(`\n</div>`))
-            .pipe(rename(`${pageName}-index.njk`))
-            .pipe(gulp.dest(`${fldrPath}/`));
-          // add wrapper to local SASS file for scoping
-          gulp.src(`${fldrPath}/_${pageName}-styles.scss`)
-            .pipe(inject.prepend(`// use this wrapper to preserve scope!\n#page-${pageName} {\n`))
-            .pipe(inject.append(`\n}`))
-            .pipe(rename(`_${pageName}-styles.scss`))
-            .pipe(gulp.dest(`${fldrPath}/`));
-      }
+    for (var i = 0; i < pagesToReset.length; i++) {
+      var pageName = pagesToReset[i];
+      var fldrPath = `app/pages/${pageName}`;
+        console.log('clearing out content of', pageName);
+        exec(`rm ${fldrPath}/_${pageName}-styles.scss`);
+        exec(`rm ${fldrPath}/${pageName}-index.njk`);
+        exec(`touch ${fldrPath}/${pageName}-index.njk`);
+        exec(`touch ${fldrPath}/_${pageName}-styles.scss`);
+        // include new route in nunjucks index
+        gulp.src(`${fldrPath}/${pageName}-index.njk`)
+          .pipe(inject.prepend(`<!--use this wrapper to keep everything within page!-->` +
+            `\n<div class='page-${pageName} page'>\n`))
+          .pipe(inject.append(`\n</div>`))
+          .pipe(rename(`${pageName}-index.njk`))
+          .pipe(gulp.dest(`${fldrPath}/`));
+        // add wrapper to local SASS file for scoping
+        gulp.src(`${fldrPath}/_${pageName}-styles.scss`)
+          .pipe(inject.prepend(`// use this wrapper to preserve scope!\n#page-${pageName} {\n`))
+          .pipe(inject.append(`\n}`))
+          .pipe(rename(`_${pageName}-styles.scss`))
+          .pipe(gulp.dest(`${fldrPath}/`));
     }
   });
 });
@@ -588,9 +594,7 @@ gulp.task('default',
 });
 
 //this is our deployment task, it will set everything for deployment-ready files
-gulp.task('deploy', gulpSequence(
-  commands.clean,
-  commands.deploy.scaffold,
+gulp.task('deploy', [commands.clean], gulpSequence(
   commands.compile.html,
   commands.compile.scripts,
   commands.compile.styles,
@@ -600,6 +604,5 @@ gulp.task('deploy', gulpSequence(
     commands.deploy.images,
     commands.deploy.fonts,
     commands.deploy.html,
-    commands.deploy.misc,
   ]
 ));
