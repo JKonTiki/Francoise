@@ -4,6 +4,7 @@ Bonjour there, I'm a lightweight Gulp boilerplate for component-based sing-page-
 
 At the very least, I offer simple/ergonomic build tools and a neat file structure that will make organizing your code _tellement facile_. At your disposal you'll also have SASS styling, Nunjucks templating, and a handy navigator for rendering through different pages.
 
+
 _Je suis là, devant toi, toujours la même_
 
 
@@ -20,7 +21,7 @@ _Je suis là, devant toi, toujours la même_
 
 I use [Nunjucks](https://github.com/mozilla/nunjucks), [SASS](http://sass-lang.com/), and [Browserify](http://browserify.org/) to compile modularizable HTML, CSS, and JavaScript respectively. The [build process](https://github.com/JKonTiki/Francoise/blob/master/gulpfile.js) also watches files for hot reloading, lints your JS, and uses SourceMaps for accurate debugging.
 
-#### Architecture
+### Architecture
 
 I'm a big fan of breaking code up into components. By cohabitating a module's HTML, CSS, and JS, your code is unentagnled by design and easy to reuse elsewhere. The only difference between a `component` and a `page` is that the latter are meant to be routed through `app/general/scripts/navigator.js`, which uses a simple show/hide model based on a url-listener. The idea is that code in different components/pages should not interact, with common code best being kept in `app/general`.
 
@@ -71,24 +72,24 @@ Francoise/
 |—— README.md
 ```
 
-#### Generating a New Component/Page
+### Generating a New Component/Page
 
 We can generate new components and pages from the CLI!
 
 `gulp component -g new-component-name` will do just that, and we can delete with `gulp page -d page-to-be-deleted`. Some synonym flags work too, see flags variable in gulpfile.js. If you'd like to tinker with this manually, here's the process that I go through:
 
-For new Pages & Components, I will:
+New Pages & Components will:
 * Generate folder with corresponding HTML, SASS, & JS indices
 * Create wrappers, recommended for local scopage of new SASS & HTML code (JS can be required/imported node-style modules)
 * Import new stylesheet^^ to our main SASS index at `app/general/styles/index.scss`
 
-In addition, for new Pages I will also:
+In addition, new Pages will:
 * Add a new route to our navigator, corresponding to the aforementioned wrapper's ID
 * Automatically adds new HTML to our Nunjucks index (do this manually for components). Our navigator hides all pages less the one actively routed to.
 
 Deletions basically reverse engineer this process.
 
-#### Configuration
+### Configuration
 
 Although our build process is built with a somewhat specific architecture in mind, if you want to change up the folder structure you can totally do so - just adjust your paths at the top of the Gulpfile. Config component/page generation tasks specifically if you wish to adapt those as well.
 
