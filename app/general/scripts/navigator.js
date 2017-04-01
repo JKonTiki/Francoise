@@ -57,4 +57,6 @@
   }
   //initial route render
   renderRoute(hash);
+  // we hide other html until navigator is ready
+  document.querySelector("body").classList.remove('hidden');
 }());
