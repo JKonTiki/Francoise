@@ -239,7 +239,7 @@ var addWrapperDiv = function(fldrPath, name, type){
   if (type === types.component) {
     openingDivTag = `<div class='${type}-${name} ${type}'>`;
   } else if (type === types.page) {
-    openingDivTag = `<div id='${type}-${name}' class='${type}'>`;
+    openingDivTag = `<div id='${type}-${name}' class='${type} hidden'>`;
   }
   gulp.src(`${fldrPath}/${name}-index.njk`)
     .pipe(inject.prepend(`<!--use this wrapper to keep everything within ${type}!-->` +
@@ -260,7 +260,8 @@ var addStylesWrapper = function(fldrPath, name, type){
 
 var commentOnNewScripts = function(fldrPath, name){
   gulp.src(`${fldrPath}/${name}-scripts.js`)
-    .pipe(inject.prepend(`// var testModule =  require('./../../general/scripts/test-module')` +
+    .pipe(inject.prepend(`/* jshint esversion: 6 */` +
+      `\n\n// var testModule =  require('./../../general/scripts/test-module')` +
       `\n// use statements like this^^ for JS passing\n\n`))
     .pipe(rename(`${name}-scripts.js`))
     .pipe(gulp.dest(`${fldrPath}/`));

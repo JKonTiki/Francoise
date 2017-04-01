@@ -1,7 +1,8 @@
 // use this wrapper to preserve scope!
 #component-navbar {
-  height: 5em;
-  width: 25em;
+  height: 12em;
+  width: 30em;
+  padding: 1em;
   border: $color-info 1em solid;
   a {
     margin: 0 2em;

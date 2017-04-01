@@ -1,3 +1,5 @@
+/* jshint esversion: 6 */
+
 // routing is based on page-wide div ID's of the format '#page-${page-name}'
 // if those ID's are altered, update query selection format accordingly!
 
@@ -17,7 +19,7 @@
 			divId: 'page-about',
 		},
 	//!ROUTES! (this comment is an important flag for gulpfile, DND!)
-  }
+};
   let hash = window.location.href.split("#").splice(1).join('');
 
   window.addEventListener('hashchange', (event)=>{

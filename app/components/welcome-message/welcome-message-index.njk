@@ -4,6 +4,6 @@
 
 {% macro getPage(pageName) %}
   <div class='component-welcome-message component'>
-    <h1>hello<br>i am component in page<br>{{ pageName }} <-- is data being passed down to me</h1>
+    <h1>hello<br>i am component<br>my current page is <strong>{ {{ pageName }} }</strong></h1>
   </div>
 {% endmacro %}

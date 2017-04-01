@@ -2,7 +2,11 @@
 <!--be sure to copy the following tag (wrapped with curly braces {}) to any pages where you this comp. to show up-->
 <!--% include "components/navbar/index.nunjucks" %-->
 <div id='component-navbar' class="component">
-  <h2>hey there, i am NAVBAR</h2>
+  <h2>hello there, i am NAVBAR</h2>
   <h3>I am part of layout.njk, outside of all pages</h3>
-  <h4><a href="#">home</a><a href="#about">about</a></h4>
+  <br>
+  <h3>my links change the url's hash</h3>
+  <h3>which <span class="code-snippet">app/general/scripts/navigator.js</span> listens to</h3>
+  <hr>
+  <h4><a href="#">home</a>|<a href="#about">about</a></h4>
 </div>

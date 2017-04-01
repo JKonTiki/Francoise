@@ -1,6 +1,6 @@
 # Francoise
 
-Hey there, I'm a super lightweight front-end boilerplate for component-based single-page-applications that live almost completely on the client. I try not to be overly opinionated, so if you'd like to just use me to write standard HTML, CSS, & JS, then _ma cherie_, I'm there for you.
+Hey there, I'm a super lightweight front-end boilerplate for component-based single-page-applications that live  completely on the client. I try not to be overly opinionated, so if you'd like to just use me to write standard HTML, CSS, & JS, then _ma cherie_, I'm there for you.
 
 At the very least, I offer simple/ergonomic build tools and a neat file structure that will make organizing your code _tellement facile_. At your disposal you'll also have SASS styling, Nunjucks templating, and a handy navigator for rendering through different pages.
 

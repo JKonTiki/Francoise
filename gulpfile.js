@@ -143,7 +143,7 @@ gulp.task(commands.compile.scripts, function() {
    b
    .transform("babelify", {presets: ["es2015"]})
    .bundle()
-   .pipe(bundledStream);
+   .pipe(bundledStream)
 
  }).catch(function(err) {
    // ensure any errors from globby are handled
@@ -286,25 +286,15 @@ gulp.task(commands.deploy.fonts, function() {
 //cleans our build directory in case things got deleted
 gulp.task(commands.clean, function() {
   exec('rm -rf build')
-    .catch(function(err){
-      console.log('no file to clean just yet');
-    });
+    .catch(function(err){ });
   exec('rm ' + paths.html.index)
-    .catch(function(err){
-      console.log('no file to clean just yet');
-    });
+    .catch(function(err){ });
   exec('rm ' + paths.scripts.index)
-    .catch(function(err){
-      console.log('no file to clean just yet');
-    });
+    .catch(function(err){ });
   exec('rm ' + paths.styles.index)
-    .catch(function(err){
-      console.log('no file to clean just yet');
-    });
+    .catch(function(err){ });
   exec('rm ' + paths.scripts.index + '.map')
-    .catch(function(err){
-      console.log('no file to clean just yet');
-    });
+    .catch(function(err){ });
 });
 
 gulp.task(commands.clearExample, [commands.clean], function() {
@@ -354,10 +344,10 @@ gulp.task('default',
     commands.compile.styles,
   ], function() {
     //a list of watchers, so it will watch all of the following files waiting for changes
-    gulp.watch(paths.scripts.all, [commands.browserSync, commands.compile.scripts]);
-    gulp.watch(paths.styles.all, [commands.browserSync, commands.compile.styles]);
-    gulp.watch(paths.images.origin, [commands.browserSync, commands.images]);
-    gulp.watch(paths.html.all, [commands.browserSync, commands.compile.html, commands.htmlReload]);
+    gulp.watch(paths.scripts.all, [commands.compile.scripts]);
+    gulp.watch(paths.styles.all, [commands.compile.styles]);
+    gulp.watch(paths.images.origin, [commands.images]);
+    gulp.watch(paths.html.all, [commands.compile.html, commands.htmlReload]);
 });
 
 //this is our deployment task, it will set everything for deployment-ready files
