@@ -37,7 +37,7 @@ Francoise/
 |   |—— assets/
 |   |   |—— fonts/
 |   |   |—— images/
-|   |—— components/                /* be sure to [import](https://github.com/mozilla/nunjucks) components to desired pages */
+|   |—— components/                /* use nunjucks to manually import components to desired pages */
 |   |   |—— navbar/
 |   |   |   |—— _navbar-styles.scss
 |   |   |   |—— navbar-index.njk
