@@ -49,38 +49,40 @@ var flags = {
 }
 
 var paths = {
-  root: "app/",
+  root: "public/",
   images: {
-    origin:'app/assets/images/*',
+    origin:'public/assets/images/*',
     dest:'build/assets/images/',
   },
   fonts: {
-    origin:'app/assets/fonts/*',
+    origin:'public/assets/fonts/*',
     dest:'build/assets/fonts',
   },
   scripts: {
-    all:['app/components/**/*.js', 'app/pages/**/*.js', 'app/general/scripts/*.js',],
-    general: 'app/general/scripts/',
-    index: 'app/' + fileNames.scripts,
-    navigator: 'app/general/scripts/navigator.js',
+    all:['public/components/**/*.js', 'public/pages/**/*.js', 'public/general/scripts/*.js',],
+    general: 'public/general/scripts/',
+    index: 'public/' + fileNames.scripts,
+    navigator: 'public/general/scripts/navigator.js',
   },
   styles: {
-    all: ['app/**/*.scss', 'app/**/*.sass'],
-    general: 'app/general/styles',
-    index: 'app/' + fileNames.styles,
-    main: 'app/general/styles/index.scss',
+    all: ['public/**/*.scss', 'public/**/*.sass'],
+    general: 'public/general/styles',
+    index: 'public/' + fileNames.styles,
+    main: 'public/general/styles/index.scss',
   },
   html: {
-    all: ['app/pages/**/*.html', 'app/components/**/*.html','app/**/*.njk'],
-    general: 'app/general/html',
-    index: 'app/' + fileNames.html,
-    main: 'app/general/html/index.njk',
+    all: ['public/pages/**/*.html', 'public/components/**/*.html','public/**/*.njk'],
+    general: 'public/general/html',
+    index: 'public/' + fileNames.html,
+    main: 'public/general/html/index.njk',
   },
   build: {
     root: 'build/',
     scripts: 'build/',
     styles: 'build/',
   },
+  pages: 'public/pages/',
+  components: 'public/components/',
 };
 
 var commands = {
@@ -241,7 +243,7 @@ gulp.task(commands.compile.html, function() {
   .pipe(nunjucksRender({
       path: [paths.root]
     }))
-  // output files in app folder
+  // output files in public folder
   .pipe(gulp.dest(paths.root))
 });
 

@@ -1,0 +1,66 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>f r a n c o i s e</title>
+        <meta name="description" content="c'est le ruban de soleil">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="styles.css">
+        <link rel="shortcut icon" type="image/png" href="./assets/images/francoise.jpg"/>
+    </head>
+    <body class="hidden">
+      <!--use this wrapper to keep everything within component!-->
+<!--be sure to copy the following tag (wrapped with curly braces {}) to any pages where you this comp. to show up-->
+<!--% include "components/navbar/index.nunjucks" %-->
+<div id='component-navbar' class="component">
+  <h2>hello there, i am NAVBAR</h2>
+  <h3>I am part of layout.njk, outside of all pages</h3>
+  <br>
+  <h3>my links change the url's hash</h3>
+  <h3>which <span class="code-snippet">public/general/scripts/navigator.js</span> listens to</h3>
+  <br>
+  <hr>
+  <h4><a href="#">home</a>|<a href="#about">about</a></h4>
+</div>
+
+      
+
+  <!--PAGES-->
+	
+
+<!--use this wrapper to keep everything within page!-->
+
+<div id='page-about' class='page hidden'>
+  <div id="welcome-message-component-block">
+    
+  <div class='component-welcome-message component'>
+    <h1>hello<br>i am component<br>my current page is <strong>{ ABOUT_PAGE }</strong></h1>
+  </div>
+
+  </div>
+</div>
+
+	<!--use this wrapper to keep everything within page!-->
+<div id='page-error' class="page hidden">
+  <h1>404 PAGE NOT FOUND</h1>
+</div>
+
+  
+
+<!--use this wrapper to keep everything within page!-->
+<div id="page-home" class="page hidden">
+  <div id="welcome-message-component-block">
+    
+  <div class='component-welcome-message component'>
+    <h1>hello<br>i am component<br>my current page is <strong>{ HOME_PAGE }</strong></h1>
+  </div>
+
+  </div>
+</div>
+
+
+
+        <script src="scripts.js"></script>
+    </body>
+</html>

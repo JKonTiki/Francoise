@@ -27,13 +27,13 @@ I use [Nunjucks](https://github.com/mozilla/nunjucks), [SASS](http://sass-lang.c
 
 ### Architecture
 
-I'm a big fan of breaking code up into components. By cohabitating a module's HTML, CSS, and JS, your code is unentagnled by design and easy to reuse elsewhere. The only difference between a `component` and a `page` is that the latter are meant to be routed through `app/general/scripts/navigator.js`, which uses a simple show/hide model based on a url-listener. The idea is that code in different components/pages should not interact, with common code best being kept in `app/general`.
+I'm a big fan of breaking code up into components. By cohabitating a module's HTML, CSS, and JS, your code is unentagnled by design and easy to reuse elsewhere. The only difference between a `component` and a `page` is that the latter are meant to be routed through `public/general/scripts/navigator.js`, which uses a simple show/hide model based on a url-listener. The idea is that code in different components/pages should not interact, with common code best being kept in `public/general`.
 
 Here's what our project will look like:
 
 ```
 Francoise/
-|—— app/
+|—— public/
 |   |—— assets/
 |   |   |—— fonts/
 |   |   |—— images/
@@ -87,7 +87,7 @@ We can generate new components and pages from the CLI!
 New Pages & Components will:
 * Generate folder with corresponding HTML, SASS, & JS indices
 * Create wrappers, recommended for local scopage of new SASS & HTML code (JS can be required/imported node-style modules)
-* Import new stylesheet^^ to our main SASS index at `app/general/styles/index.scss`
+* Import new stylesheet^^ to our main SASS index at `public/general/styles/index.scss`
 
 In addition, new Pages will:
 * Add a new route to our navigator, corresponding to the aforementioned wrapper's ID
@@ -100,7 +100,7 @@ Deletions basically reverse engineer this process.
 
 Although our build process is built with a somewhat specific architecture in mind, if you want to change up the folder structure you can totally do so - just adjust your paths at the top of the Gulpfile. Config component/page generation tasks specifically if you wish to adapt those as well.
 
-See `app/general/scripts/navigator.js` for routing config.
+See `public/general/scripts/navigator.js` for routing config.
 
 
 ## Credits

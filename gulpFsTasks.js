@@ -33,7 +33,7 @@ var componentTask = function(argv, flags, paths){
       return;
     }
     var name = argv[createKeys[i]];
-    pathExists(`app/components/${name}`).then(exists =>{
+    pathExists(`${paths.components}${name}`).then(exists =>{
       if (exists) {
         console.log(`component folder ${name} already exists!`);
       } else {
@@ -44,7 +44,7 @@ var componentTask = function(argv, flags, paths){
   // loop through and delete relevant material
   for (var i = 0; i < deleteKeys.length; i++) {
     var name = argv[deleteKeys[i]];
-    pathExists(`app/components/${name}`).then(exists =>{
+    pathExists(`${paths.components}${name}`).then(exists =>{
       if (!exists) {
         console.log(`no component folder for "${name}" exists`);
       } else {
@@ -56,7 +56,7 @@ var componentTask = function(argv, flags, paths){
 
 var createComponent = function(name, paths){
   console.log(`creating component: ${name}`);
-  var fldrPath = `app/components/${name}`;
+  var fldrPath = `${paths.components}${name}`;
   let type = types.component;
   exec(`mkdir ${fldrPath}`);
   exec(`touch ${fldrPath}/${name}-index.njk`);
@@ -70,7 +70,7 @@ var createComponent = function(name, paths){
 
 var deleteComponent = function(name, paths){
   console.log(`removing component: ${name}`);
-  var fldrPath = `app/components/${name}`;
+  var fldrPath = `${paths.components}${name}`;
   var type = types.component;
   exec(`rm -rf ${fldrPath}`);
   removeFromStyleIndex(name, paths, type);
@@ -100,7 +100,7 @@ var pageTask = function(argv, flags, fileNames, paths){
       return;
     }
     var name = argv[createKeys[i]];
-    pathExists(`app/pages/${name}`).then(exists =>{
+    pathExists(`${paths.pages}${name}`).then(exists =>{
       if (exists) {
         console.log(`page folder ${name} already exists!`);
       } else {
@@ -116,7 +116,7 @@ var pageTask = function(argv, flags, fileNames, paths){
       console.log("cannot auto-delete 'error' or 'home' pages. see README to manually go through process, or run 'gulp clear-example from original project clone to remove content'.");
       return;
     }
-    pathExists(`app/pages/${name}`).then(exists =>{
+    pathExists(`${paths.pages}${name}`).then(exists =>{
       if (!exists) {
         console.log(`no page folder for "${name}" exists`);
       } else {
@@ -128,7 +128,7 @@ var pageTask = function(argv, flags, fileNames, paths){
 }
 
 var createPage = function(name, fileNames, paths){
-  var fldrPath = `app/pages/${name}`;
+  var fldrPath = `${paths.pages}${name}`;
   var type = types.page;
   exec(`mkdir ${fldrPath}`);
   exec(`touch ${fldrPath}/${name}-index.njk`);
@@ -138,20 +138,20 @@ var createPage = function(name, fileNames, paths){
   addWrapperDiv(fldrPath, name, type);
   addStylesWrapper(fldrPath, name, type);
   commentOnNewScripts(fldrPath, name, type);
-  addRoute(name, fileNames, paths);
+  addPageNav(name, fileNames, paths);
 }
 
 var deletePage = function(name, fileNames, paths){
-  var fldrPath = `app/pages/${name}`;
+  var fldrPath = `${paths.pages}${name}`;
   var type = types.page;
   exec(`rm -rf ${fldrPath}`);
   removeFromStyleIndex(name, paths, type);
-  removeRoute(name, fileNames, paths);
+  removePageNav(name, fileNames, paths);
 }
 
 var cleanExApp = function(paths){
   console.log('this may take a moment');
-    pathExists(`app/components/welcome-message`).then(exists =>{
+    pathExists(`${paths.components}welcome-message`).then(exists =>{
     if (!exists) {
       console.log('this command is very sensitive, please only use on original clone!');
       return;
@@ -164,17 +164,17 @@ var cleanExApp = function(paths){
           .pipe(inject.replace(`{% include "components/navbar/navbar-index.njk" %}`, ''))
           .pipe(rename('layout.njk'))
           .pipe(gulp.dest(paths.html.general));
-        exec('rm app/assets/images/francoise.jpg').then(()=>{
+        exec(`rm ${paths.root}assets/images/francoise.jpg`).then(()=>{
           console.log('clearing about page');
           exec('gulp page -d about').then(()=>{
             console.log('clearing interfaces');
-            exec('rm app/general/styles/abstracts/_interfaces.scss').then(()=>{
-              exec('touch app/general/styles/abstracts/_interfaces.scss').then(()=>{
+            exec(`rm ${paths.styles.general}abstracts/_interfaces.scss`).then(()=>{
+              exec(`touch ${paths.styles.general}abstracts/_interfaces.scss`).then(()=>{
                 console.log('clearing general.scss');
-                exec('rm app/general/styles/base/_general.scss').then(()=>{
-                  exec('touch app/general/styles/base/_general.scss').then(()=>{
+                exec(`rm ${paths.styles.general}base/_general.scss`).then(()=>{
+                  exec(`touch ${paths.styles.general}base/_general.scss`).then(()=>{
                     var name = 'home';
-                    var fldrPath = `app/pages/${name}`;
+                    var fldrPath = `${paths.pages}${name}`;
                     console.log('clearing home page content');
                     exec(`rm ${fldrPath}/_${name}-styles.scss`).then(()=>{
                       exec(`rm ${fldrPath}/${name}-index.njk`).then(()=>{
@@ -182,7 +182,7 @@ var cleanExApp = function(paths){
                           exec(`touch ${fldrPath}/_${name}-styles.scss`).then(()=>{
                             repopulateClearedContent(fldrPath, name, paths);
                             name = 'error';
-                            fldrPath = `app/pages/${name}`;
+                            fldrPath = `${paths.pages}${name}`;
                             console.log('clearing error page content');
                             exec(`rm ${fldrPath}/_${name}-styles.scss`).then(()=>{
                               exec(`rm ${fldrPath}/${name}-index.njk`).then(()=>{
@@ -267,11 +267,11 @@ var commentOnNewScripts = function(fldrPath, name){
     .pipe(gulp.dest(`${fldrPath}/`));
 }
 
-var addRoute = function(name, fileNames, paths){
+var addPageNav = function(name, fileNames, paths){
   // replace hyphens with underscores for routing object's prop key
   var nameKey = name.replace(/-/g, "_");
   gulp.src(paths.scripts.navigator)
-    .pipe(inject.before('//!ROUTES!',
+    .pipe(inject.before('//!PAGES!',
     `\t${nameKey}: {` +
       `\n\t\t\thash: '${name}',` +
       `\n\t\t\tdivId: 'page-${name}',` +
@@ -279,14 +279,14 @@ var addRoute = function(name, fileNames, paths){
     .pipe(rename(fileNames.navigator))
     .pipe(gulp.dest(paths.scripts.navigator.split(fileNames.navigator)[0]));
 
-  // we also automatically include new route in nunjucks index
+  // we also automatically include new page in nunjucks index
   gulp.src(paths.html.main)
     .pipe(inject.after('<!--PAGES-->', `\n\t{% include './pages/${name}/${name}-index.njk' %}`))
     .pipe(rename("index.njk"))
     .pipe(gulp.dest(paths.html.main.split("index.njk")[0]));
 }
 
-removeRoute = function(name, fileNames, paths){
+removePageNav = function(name, fileNames, paths){
   var nameKey = name.replace(/-/g, "_");
   gulp.src(paths.scripts.navigator)
   .pipe(inject.replace(
@@ -297,7 +297,7 @@ removeRoute = function(name, fileNames, paths){
     , ''))
   .pipe(rename(fileNames.navigator))
   .pipe(gulp.dest(paths.scripts.navigator.split(fileNames.navigator)[0]));
-  // delete route html inclusion in nunjucks index
+  // delete page's html inclusion in nunjucks index
   gulp.src(paths.html.main)
   .pipe(inject.replace(`\n\t{% include './pages/${name}/${name}-index.njk' %}`, ''))
   .pipe(rename("index.njk"))

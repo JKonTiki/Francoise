@@ -1,8 +1,10 @@
 /* jshint esversion: 6 */
 
 var exampleFunc = function(){
-  console.log('hello-worldasdfasd');
+  console.log('hello-world');
 };
 var exampleVar = 'test';
+
+
 exports.exampleVar = exampleVar;
 exports.exampleFunc = exampleFunc;
