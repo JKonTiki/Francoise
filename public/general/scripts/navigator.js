@@ -2,7 +2,6 @@
 
 // client routing is based on page-wide div ID's of the format '#page-${page-name}'
 // if those ID's are altered, update query selection format accordingly!
-console.log(__dirname);
 (function(){
   let pages = {
     home: {
@@ -12,7 +11,7 @@ console.log(__dirname);
     },
 		error: {
       hash: 'error',
-      divId: 'page-error'
+      divId: 'page-error',
       js: require('./../../pages/error/error-scripts'),
     },
 		about: {
@@ -45,6 +44,7 @@ console.log(__dirname);
       let page = document.querySelector(`#${pages[_pageKey].divId}`);
       let pageClasses = page.classList.value.split(' ');
       if (!pageClasses.includes('hidden')) {
+        // if it exists, this is a good place to fire a page.js.unmount()
         page.classList.add('hidden');
       }
     }
@@ -56,7 +56,7 @@ console.log(__dirname);
     // show hash's page if it not already shown
     let activePageClasses = activePage.classList.value.split(' ');
     if (activePageClasses.includes('hidden')) {
-      // mount js if it's setup for that
+      // mount js if page is setup for that
       if (pages[pageKey].js.mount) {
         pages[pageKey].js.mount();
       }

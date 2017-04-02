@@ -212,6 +212,7 @@ var cleanExApp = function(paths){
 var repopulateClearedContent = function(fldrPath, name, paths){
   addDivWrapper(fldrPath, name, types.page);
   addStylesWrapper(fldrPath, name, types.page);
+  addScriptsWrapper(fldrPath, name, types.page);
 }
 
 var importInStyleIndex = function(name, paths, type){
@@ -258,11 +259,11 @@ var addStylesWrapper = function(fldrPath, name, type){
 }
 
 
-var addScriptsWrapper = function(fldrPath, name){
+var addScriptsWrapper = function(fldrPath, name, type){
   gulp.src(`${fldrPath}/${name}-scripts.js`)
     .pipe(inject.prepend(`/* jshint esversion: 6 */` +
       `\n\nexports.mount = function(){` +
-      `\n\n/}`))
+      `\n\n/};`))
     .pipe(rename(`${name}-scripts.js`))
     .pipe(gulp.dest(`${fldrPath}/`));
 }

@@ -3,7 +3,9 @@ node_modules
 .DS_Store
 build
 tmp
-app/index.html
-app/styles.css
-app/scripts.js
-app/scripts.js.map
+public/views/**/index.html
+public/views/**/styles.css
+public/scripts.js
+public/scripts.js.map
+public/index.html
+public/styles.css

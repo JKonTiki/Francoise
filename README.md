@@ -37,7 +37,7 @@ Francoise/
 |   |—— assets/
 |   |   |—— fonts/
 |   |   |—— images/
-|   |—— components/                /* use nunjucks to manually import components to desired pages */
+|   |—— components/                /* to include comp's, manually import .njk and .js to desired page  */
 |   |   |—— navbar/
 |   |   |   |—— _navbar-styles.scss
 |   |   |   |—— navbar-index.njk
@@ -69,7 +69,9 @@ Francoise/
 |   |—— index.html
 |   |—— scripts.js     /* this will be minified */
 |   |—— styles.css     /* ^ditto */
+|—— Views/             
 |—— .gitignore
+|—— app.js             /* our Node.js server */
 |—— gulpfile.js
 |—— gulpFsTasks.js     /* moves file system logic out of gulpfile */
 |—— LICENSE
@@ -95,15 +97,16 @@ In addition, new Pages will:
 
 Deletions basically reverse engineer this process.
 
+
 ### Notes On JS
 
-At the moment, all JS fires regardless of whether pages or components are in play. If you want things to trigger upon 'mounting' or 'unmounting' (e.g. transition animations), then I would wrap them in functions, export them to the navigator, and call them
+By default, JS modules are wrapped in mount() functions. The navigator automatically imports and runs these for pages, but _component JS modules must be manually imported and mounted_. See the sample app, where `welcome-message` has its template included as a [macro](https://mozilla.github.io/nunjucks/templating.html#macro) and its JS as a node module in our `home` page's .njk & .js files, respectively. You can also remove the wrapper function or have it fire anonymously if its activity is based on component-specific DOM events or just doesn't express brashness.
+
 
 ### Server-side Opps
 
-Routing is really meant to take place on the client-side, as this boilerplate is primarily for SPA's. I've thought about extending containers one scope further (components -> pages -> views) but I'm afraid this might overcomplicate things for SPA usage. If you did want to do that manually, keep the following in mind:
+The server is thin by default, routing to only one view and meant more for 404 catching, database endpoints, etc. Routing is really meant to take place on the client-side, as this boilerplate is primarily for SPA's.
 
-* you should be able to share the global JS index, but I would add logic to the navigator
 
 ### Configuration
 
