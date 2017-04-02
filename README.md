@@ -27,7 +27,7 @@ I use [Nunjucks](https://github.com/mozilla/nunjucks), [SASS](http://sass-lang.c
 
 ### Architecture
 
-I'm a big fan of breaking code up into components. By cohabitating a module's HTML, CSS, and JS, your code is unentagnled by design and easy to reuse elsewhere. The only difference between a `component` and a `page` is that the latter are meant to be routed through `public/general/scripts/navigator.js`, which uses a simple show/hide model based on a url-listener. The idea is that code in different components/pages should not interact, with common code best being kept in `public/general`.
+I'm a big fan of breaking code up into components. By cohabitating a module's HTML, CSS, and JS, your code is unentagnled by design and easy to reuse elsewhere. The only difference between a `component` and a `page` is that the latter are meant to be navigated via `public/general/scripts/navigator.js`, which uses a simple show/hide model based on a url-listener. The idea is that code in different components/pages should not interact, with common code best being kept in `public/general`.
 
 Here's what our project will look like:
 
@@ -95,6 +95,15 @@ In addition, new Pages will:
 
 Deletions basically reverse engineer this process.
 
+### Notes On JS
+
+At the moment, all JS fires regardless of whether pages or components are in play. If you want things to trigger upon 'mounting' or 'unmounting' (e.g. transition animations), then I would wrap them in functions, export them to the navigator, and call them
+
+### Server-side Opps
+
+Routing is really meant to take place on the client-side, as this boilerplate is primarily for SPA's. I've thought about extending containers one scope further (components -> pages -> views) but I'm afraid this might overcomplicate things for SPA usage. If you did want to do that manually, keep the following in mind:
+
+* you should be able to share the global JS index, but I would add logic to the navigator
 
 ### Configuration
 

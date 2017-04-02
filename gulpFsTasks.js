@@ -63,9 +63,9 @@ var createComponent = function(name, paths){
   exec(`touch ${fldrPath}/${name}-scripts.js`);
   exec(`touch ${fldrPath}/_${name}-styles.scss`);
   importInStyleIndex(name, paths, type);
-  addWrapperDiv(fldrPath, name, type);
+  addDivWrapper(fldrPath, name, type);
   addStylesWrapper(fldrPath, name, type);
-  commentOnNewScripts(fldrPath, name, type);
+  addScriptsWrapper(fldrPath, name, type);
 }
 
 var deleteComponent = function(name, paths){
@@ -135,9 +135,9 @@ var createPage = function(name, fileNames, paths){
   exec(`touch ${fldrPath}/${name}-scripts.js`);
   exec(`touch ${fldrPath}/_${name}-styles.scss`);
   importInStyleIndex(name, paths, type);
-  addWrapperDiv(fldrPath, name, type);
+  addDivWrapper(fldrPath, name, type);
   addStylesWrapper(fldrPath, name, type);
-  commentOnNewScripts(fldrPath, name, type);
+  addScriptsWrapper(fldrPath, name, type);
   addPageNav(name, fileNames, paths);
 }
 
@@ -210,7 +210,7 @@ var cleanExApp = function(paths){
 }
 
 var repopulateClearedContent = function(fldrPath, name, paths){
-  addWrapperDiv(fldrPath, name, types.page);
+  addDivWrapper(fldrPath, name, types.page);
   addStylesWrapper(fldrPath, name, types.page);
 }
 
@@ -234,7 +234,7 @@ var removeFromStyleIndex = function(name, paths, type){
   .pipe(gulp.dest(paths.styles.general));
 }
 
-var addWrapperDiv = function(fldrPath, name, type){
+var addDivWrapper = function(fldrPath, name, type){
   var openingDivTag;
   if (type === types.component) {
     openingDivTag = `<div class='${type}-${name} ${type}'>`;
@@ -258,11 +258,11 @@ var addStylesWrapper = function(fldrPath, name, type){
 }
 
 
-var commentOnNewScripts = function(fldrPath, name){
+var addScriptsWrapper = function(fldrPath, name){
   gulp.src(`${fldrPath}/${name}-scripts.js`)
     .pipe(inject.prepend(`/* jshint esversion: 6 */` +
-      `\n\n// var testModule =  require('./../../general/scripts/test-module')` +
-      `\n// use statements like this^^ for JS passing\n\n`))
+      `\n\nexports.mount = function(){` +
+      `\n\n/}`))
     .pipe(rename(`${name}-scripts.js`))
     .pipe(gulp.dest(`${fldrPath}/`));
 }
@@ -275,6 +275,7 @@ var addPageNav = function(name, fileNames, paths){
     `\t${nameKey}: {` +
       `\n\t\t\thash: '${name}',` +
       `\n\t\t\tdivId: 'page-${name}',` +
+      `\n\t\t\tjs: require('./../../pages/${name}/${name}-scripts'),` +
     `\n\t\t},\n\t`))
     .pipe(rename(fileNames.navigator))
     .pipe(gulp.dest(paths.scripts.navigator.split(fileNames.navigator)[0]));
