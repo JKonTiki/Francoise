@@ -105,7 +105,7 @@ By default, JS modules are wrapped in mount() functions. The navigator automatic
 
 ### Server-side Opps
 
-The server is thin by default, routing to only one view and meant more for 404 catching, database endpoints, etc. Routing is really meant to take place on the client-side, as this boilerplate is primarily for SPA's.
+The server is thin by default, routing to only one view and meant more for error catching, database endpoints, etc. Routing is really meant to take place on the client-side, as this boilerplate is primarily for SPA's.
 
 
 ### Configuration

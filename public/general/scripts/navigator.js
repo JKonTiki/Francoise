@@ -2,27 +2,34 @@
 
 // client routing is based on page-wide div ID's of the format '#page-${page-name}'
 // if those ID's are altered, update query selection format accordingly!
+
 (function(){
+  let imports = {
+    home_js: require('./../../pages/home/home-scripts'),
+    error_js: require('./../../pages/error/error-scripts'),
+    about_js: require('./../../pages/about/about-scripts'),
+		// DEPRECATED -- test_js: require('./../../pages/test/test-scripts'),
+		//!JS_IMPORTS! (this comment is an important flag for gulp, DND!)
+  };
   let pages = {
     home: {
       hash: '',
       divId: 'page-home',
-      js: require('./../../pages/home/home-scripts'),
+      js: imports.home_js,
     },
 		error: {
       hash: 'error',
       divId: 'page-error',
-      js: require('./../../pages/error/error-scripts'),
+      js: imports.error_js,
     },
 		about: {
 			hash: 'about',
 			divId: 'page-about',
-      js: require('./../../pages/about/about-scripts'),
+      js: imports.about_js,
 		},
-	//!PAGES! (this comment is an important flag for gulpfile, DND!)
-};
+	//!PAGES! (this comment is an important flag for gulp, DND!)
+  };
   let hash = window.location.href.split("#").splice(1).join('');
-
   window.addEventListener('hashchange', (event)=>{
     let newHash = event.newURL.split('#').splice(1).join('');
     renderPage(newHash);
@@ -50,15 +57,16 @@
     }
     if (!activePage) {
       // if no page exists for that hash, show error page
-
       activePage = document.querySelector(`#${pages.error.divId}`);
+      pageKey = 'error';
     }
     // show hash's page if it not already shown
     let activePageClasses = activePage.classList.value.split(' ');
     if (activePageClasses.includes('hidden')) {
       // mount js if page is setup for that
-      if (pages[pageKey].js.mount) {
-        pages[pageKey].js.mount();
+      let pageJs = pages[pageKey].js;
+      if (pageJs.mount) {
+      pageJs.mount();
       }
       activePage.classList.remove('hidden');
     }

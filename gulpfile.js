@@ -113,6 +113,46 @@ var commands = {
 };
 
 
+//this is our master task when you run `gulp` in CLI / Terminal
+gulp.task('default',
+  [
+    commands.browserSync,
+    commands.lint,
+    commands.compile.html,
+    commands.compile.scripts,
+    commands.compile.styles,
+  ], function() {
+    //a list of watchers, so it will watch all of the following files waiting for changes
+    gulp.watch(paths.scripts.all, [commands.compile.scripts]);
+    gulp.watch(paths.styles.all, [commands.compile.styles]);
+    gulp.watch(paths.images.origin, [commands.images]);
+    gulp.watch(paths.html.all, [commands.compile.html, commands.htmlReload]);
+});
+
+//this is our deployment task, it will set everything for deployment-ready files
+gulp.task('deploy', [commands.clean], gulpSequence(
+  commands.compile.html,
+  commands.compile.scripts,
+  commands.compile.styles,
+  [
+    commands.deploy.scripts,
+    commands.deploy.styles,
+    commands.deploy.images,
+    commands.deploy.fonts,
+    commands.deploy.html,
+  ]
+));
+
+var compileForDev = function(){
+  gulpSequence(
+    commands.browserSync,
+    commands.lint,
+    commands.compile.html,
+    commands.compile.scripts,
+    commands.compile.styles
+  );
+}
+
 // SCRIPTS
 //compiling our Javascripts
 gulp.task(commands.compile.scripts, function() {
@@ -301,7 +341,7 @@ gulp.task(commands.clean, function() {
 
 gulp.task(commands.clearExample, [commands.clean], function() {
   // beware looking further into the bowels of this custom cleanse, ye be warned
-  require('./gulpFsTasks.js').cleanExApp(paths);
+  require('./gulpFsTasks.js').cleanExApp(paths, compileForDev);
 });
 
 //create folders using shell
@@ -324,44 +364,13 @@ gulp.task(commands.browserSync, function() {
     });
 });
 
-
 // CREATE components and pages
 // generate a component
 gulp.task(commands.component, function(){
-  require('./gulpFsTasks.js').componentTask(argv, flags, paths);
+  require('./gulpFsTasks.js').componentTask(argv, flags, paths, compileForDev);
 });
 
 //generate a page
 gulp.task(commands.page, function(){
-  require('./gulpFsTasks.js').pageTask(argv, flags, fileNames, paths);
+  require('./gulpFsTasks.js').pageTask(argv, flags, fileNames, paths, compileForDev);
 });
-
-//this is our master task when you run `gulp` in CLI / Terminal
-gulp.task('default',
-  [
-    commands.browserSync,
-    commands.lint,
-    commands.compile.html,
-    commands.compile.scripts,
-    commands.compile.styles,
-  ], function() {
-    //a list of watchers, so it will watch all of the following files waiting for changes
-    gulp.watch(paths.scripts.all, [commands.compile.scripts]);
-    gulp.watch(paths.styles.all, [commands.compile.styles]);
-    gulp.watch(paths.images.origin, [commands.images]);
-    gulp.watch(paths.html.all, [commands.compile.html, commands.htmlReload]);
-});
-
-//this is our deployment task, it will set everything for deployment-ready files
-gulp.task('deploy', [commands.clean], gulpSequence(
-  commands.compile.html,
-  commands.compile.scripts,
-  commands.compile.styles,
-  [
-    commands.deploy.scripts,
-    commands.deploy.styles,
-    commands.deploy.images,
-    commands.deploy.fonts,
-    commands.deploy.html,
-  ]
-));

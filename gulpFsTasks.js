@@ -11,7 +11,7 @@ var types = {
   page: 'page',
 }
 
-var componentTask = function(argv, flags, paths){
+var componentTask = function(argv, flags, paths, compileForDev){
   var createKeys = [];
   var deleteKeys = [];
   // check flags to see if any are keys for a creation or deletion
@@ -52,6 +52,7 @@ var componentTask = function(argv, flags, paths){
       }
     })
   }
+  compileForDev();
 }
 
 var createComponent = function(name, paths){
@@ -76,7 +77,7 @@ var deleteComponent = function(name, paths){
   removeFromStyleIndex(name, paths, type);
 }
 
-var pageTask = function(argv, flags, fileNames, paths){
+var pageTask = function(argv, flags, fileNames, paths, compileForDev) {
   var createKeys = [];
   var deleteKeys = [];
   // check flags to see if any are keys for a creation or deletion
@@ -125,6 +126,7 @@ var pageTask = function(argv, flags, fileNames, paths){
       }
     })
   }
+  compileForDev();
 }
 
 var createPage = function(name, fileNames, paths){
@@ -149,7 +151,7 @@ var deletePage = function(name, fileNames, paths){
   removePageNav(name, fileNames, paths);
 }
 
-var cleanExApp = function(paths){
+var cleanExApp = function(paths, compileForDev){
   console.log('this may take a moment');
     pathExists(`${paths.components}welcome-message`).then(exists =>{
     if (!exists) {
@@ -189,6 +191,7 @@ var cleanExApp = function(paths){
                                 exec(`touch ${fldrPath}/${name}-index.njk`).then(()=>{
                                   exec(`touch ${fldrPath}/_${name}-styles.scss`).then(()=>{
                                     repopulateClearedContent(fldrPath, name, paths);
+                                    compileForDev();
                                   });
                                 });
                               });
@@ -263,7 +266,7 @@ var addScriptsWrapper = function(fldrPath, name, type){
   gulp.src(`${fldrPath}/${name}-scripts.js`)
     .pipe(inject.prepend(`/* jshint esversion: 6 */` +
       `\n\nexports.mount = function(){` +
-      `\n\n/};`))
+      `\n\n};`))
     .pipe(rename(`${name}-scripts.js`))
     .pipe(gulp.dest(`${fldrPath}/`));
 }
@@ -276,11 +279,12 @@ var addPageNav = function(name, fileNames, paths){
     `\t${nameKey}: {` +
       `\n\t\t\thash: '${name}',` +
       `\n\t\t\tdivId: 'page-${name}',` +
-      `\n\t\t\tjs: require('./../../pages/${name}/${name}-scripts'),` +
+      `\n\t\t\tjs: imports.${name}_js,` +
     `\n\t\t},\n\t`))
+    .pipe(inject.before('//!JS_IMPORTS!',
+      `${nameKey}_js: require('./../../pages/${name}/${name}-scripts'),\n\t\t`))
     .pipe(rename(fileNames.navigator))
     .pipe(gulp.dest(paths.scripts.navigator.split(fileNames.navigator)[0]));
-
   // we also automatically include new page in nunjucks index
   gulp.src(paths.html.main)
     .pipe(inject.after('<!--PAGES-->', `\n\t{% include './pages/${name}/${name}-index.njk' %}`))
@@ -295,8 +299,10 @@ removePageNav = function(name, fileNames, paths){
     `\t${nameKey}: {` +
       `\n\t\t\thash: '${name}',` +
       `\n\t\t\tdivId: 'page-${name}',` +
+      `\n\t\t\tjs: imports.${name}_js,` +
     `\n\t\t},\n\t`
     , ''))
+  .pipe(inject.before(`${nameKey}_js: `, '// DEPRECATED -- '))
   .pipe(rename(fileNames.navigator))
   .pipe(gulp.dest(paths.scripts.navigator.split(fileNames.navigator)[0]));
   // delete page's html inclusion in nunjucks index
