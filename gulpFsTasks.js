@@ -170,28 +170,36 @@ var cleanExApp = function(paths, compileForDev){
           console.log('clearing about page');
           exec('gulp page -d about').then(()=>{
             console.log('clearing interfaces');
-            exec(`rm ${paths.styles.general}abstracts/_interfaces.scss`).then(()=>{
-              exec(`touch ${paths.styles.general}abstracts/_interfaces.scss`).then(()=>{
+            exec(`rm ${paths.styles.general}/abstracts/_interfaces.scss`).then(()=>{
+              exec(`touch ${paths.styles.general}/abstracts/_interfaces.scss`).then(()=>{
                 console.log('clearing general.scss');
-                exec(`rm ${paths.styles.general}base/_general.scss`).then(()=>{
-                  exec(`touch ${paths.styles.general}base/_general.scss`).then(()=>{
+                exec(`rm ${paths.styles.general}/base/_general.scss`).then(()=>{
+                  exec(`touch ${paths.styles.general}/base/_general.scss`).then(()=>{
                     var name = 'home';
                     var fldrPath = `${paths.pages}${name}`;
                     console.log('clearing home page content');
-                    exec(`rm ${fldrPath}/_${name}-styles.scss`).then(()=>{
-                      exec(`rm ${fldrPath}/${name}-index.njk`).then(()=>{
-                        exec(`touch ${fldrPath}/${name}-index.njk`).then(()=>{
-                          exec(`touch ${fldrPath}/_${name}-styles.scss`).then(()=>{
-                            repopulateClearedContent(fldrPath, name, paths);
-                            name = 'error';
-                            fldrPath = `${paths.pages}${name}`;
-                            console.log('clearing error page content');
-                            exec(`rm ${fldrPath}/_${name}-styles.scss`).then(()=>{
-                              exec(`rm ${fldrPath}/${name}-index.njk`).then(()=>{
-                                exec(`touch ${fldrPath}/${name}-index.njk`).then(()=>{
-                                  exec(`touch ${fldrPath}/_${name}-styles.scss`).then(()=>{
-                                    repopulateClearedContent(fldrPath, name, paths);
-                                    compileForDev();
+                    exec(`rm ${fldrPath}/${name}-index.njk`).then(()=>{
+                      exec(`rm ${fldrPath}/_${name}-styles.scss`).then(()=>{
+                        exec(`rm ${fldrPath}/${name}-scripts.js`).then(()=>{
+                          exec(`touch ${fldrPath}/${name}-index.njk`).then(()=>{
+                            exec(`touch ${fldrPath}/_${name}-styles.scss`).then(()=>{
+                              exec(`touch ${fldrPath}/${name}-scripts.js`).then(()=>{
+                                repopulateClearedContent(fldrPath, name, paths);
+                                name = 'error';
+                                fldrPath = `${paths.pages}${name}`;
+                                console.log('clearing error page content');
+                                exec(`rm ${fldrPath}/${name}-index.njk`).then(()=>{
+                                  exec(`rm ${fldrPath}/_${name}-styles.scss`).then(()=>{
+                                    exec(`rm ${fldrPath}/${name}-scripts.js`).then(()=>{
+                                      exec(`touch ${fldrPath}/${name}-index.njk`).then(()=>{
+                                        exec(`touch ${fldrPath}/_${name}-styles.scss`).then(()=>{
+                                          exec(`touch ${fldrPath}/${name}-scripts.js`).then(()=>{
+                                            repopulateClearedContent(fldrPath, name, paths);
+                                            compileForDev();
+                                          });
+                                        });
+                                      });
+                                    });
                                   });
                                 });
                               });
@@ -302,7 +310,7 @@ removePageNav = function(name, fileNames, paths){
       `\n\t\t\tjs: imports.${name}_js,` +
     `\n\t\t},\n\t`
     , ''))
-  .pipe(inject.before(`${nameKey}_js: `, '// DEPRECATED -- '))
+  .pipe(inject.replace(`${nameKey}_js: `, '// DEPRECATED --'))
   .pipe(rename(fileNames.navigator))
   .pipe(gulp.dest(paths.scripts.navigator.split(fileNames.navigator)[0]));
   // delete page's html inclusion in nunjucks index

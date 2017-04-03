@@ -9,6 +9,7 @@
     error_js: require('./../../pages/error/error-scripts'),
     about_js: require('./../../pages/about/about-scripts'),
 		// DEPRECATED -- test_js: require('./../../pages/test/test-scripts'),
+		about_js: require('./../../pages/about/about-scripts'),
 		//!JS_IMPORTS! (this comment is an important flag for gulp, DND!)
   };
   let pages = {
@@ -25,7 +26,7 @@
 		about: {
 			hash: 'about',
 			divId: 'page-about',
-      js: imports.about_js,
+			js: imports.about_js,
 		},
 	//!PAGES! (this comment is an important flag for gulp, DND!)
   };
