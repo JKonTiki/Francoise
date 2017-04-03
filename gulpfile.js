@@ -11,6 +11,7 @@ var fs = require('fs');
 var globby = require('globby');
 var gulp = require('gulp');
 var gulpSequence = require('gulp-sequence').use(gulp);
+var gls = require('gulp-live-server');
 var gutil = require('gulp-util');
 var imagemin = require('gulp-imagemin');
 var inject = require('gulp-inject-string');
@@ -46,6 +47,8 @@ var fileNames = {
 var flags = {
   create: ['c', 'create', 'g', 'generate'],
   delete: ['d', 'delete', 'r', 'remove'],
+  production: ['p', 'prod', 'production'],
+  development: ['d', 'dev', 'development'],
 }
 
 var paths = {
@@ -100,27 +103,27 @@ var commands = {
     scripts: 'scripts-deploy',
     styles: 'styles-deploy',
   },
-  jsBrowserify: 'jsBrowserify',
-  concatJs: 'concatJs',
-  browserSync: 'browserSync',
   clean: 'clean',
+  clearExample: 'clear-example',
+  component: 'component',
+  concatJs: 'concatJs',
   htmlReload: 'html-reload',
   images: 'images',
-  lint: 'lint',
-  component: 'component',
+  jsBrowserify: 'jsBrowserify',
   page: 'page',
-  clearExample: 'clear-example',
+  lint: 'lint',
+  serve: 'serve',
 };
 
 
 //this is our master task when you run `gulp` in CLI / Terminal
 gulp.task('default',
   [
-    commands.browserSync,
     commands.lint,
     commands.compile.html,
     commands.compile.scripts,
     commands.compile.styles,
+    commands.serve,
   ], function() {
     //a list of watchers, so it will watch all of the following files waiting for changes
     gulp.watch(paths.scripts.all, [commands.compile.scripts]);
@@ -129,8 +132,8 @@ gulp.task('default',
     gulp.watch(paths.views.all, [commands.compile.html, commands.htmlReload]);
 });
 
-//this is our deployment task, it will set everything for deployment-ready files
-gulp.task('deploy', [commands.clean], gulpSequence(
+// this will build for production
+gulp.task('build', [commands.clean], gulpSequence(
   commands.compile.html,
   commands.compile.scripts,
   commands.compile.styles,
@@ -145,7 +148,6 @@ gulp.task('deploy', [commands.clean], gulpSequence(
 
 var compileForDev = function(){
   gulpSequence(
-    commands.browserSync,
     commands.lint,
     commands.compile.html,
     commands.compile.scripts,
@@ -352,15 +354,37 @@ gulp.task(commands.deploy.scaffold, function() {
   exec('mkdir build/assets/images');
 });
 
-gulp.task(commands.browserSync, function() {
-    browserSync({
-        server: {
-            baseDir: paths.root
-        },
-        options: {
-            reloadDelay: 250
-        },
-        notify: false
+gulp.task(commands.serve, function() {
+    var productionMode = false;
+    var env;
+    // running with -p or -production flag runs through build folder
+    for (var flag in argv){
+      if (flags.production.includes(flag)) {
+        productionMode = true;
+      }
+    }
+    if (productionMode) {
+      var env = 'production';
+      // we want to make sure our build files exist before calling them from app.js
+      gulpSequence(
+        commands.deploy.scripts,
+        commands.deploy.styles,
+        commands.deploy.images,
+        commands.deploy.fonts,
+        commands.deploy.html
+      )();
+    } else {
+      var env = 'development';
+    }
+    // launch our server
+    var port = 3000;
+    var server = gls('app.js', {env: {NODE_ENV: env, PORT: port}});
+    server.start();
+    // we use browserSync's great live reloading, listening through proxy server
+    browserSync.init({
+      proxy: `localhost:${port}`,
+      port: (port+1),
+      notify: true,
     });
 });
 

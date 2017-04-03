@@ -14,7 +14,7 @@ _Je suis là, devant toi, toujours la même_
 * Download this project by running `git clone https://github.com/jkontiki/Francoise.git` from the command line or clicking [here](https://github.com/jkontiki/Francoise/master.zip)
 * Switch into the project directory `cd Francoise`
 * Run `npm install` to download dependencies
-* Launch project from the command line with `gulp`
+* Launch project from the command line with `gulp` (add `-p` flag to run from build folder)
 
 
 * To clear the example-app, run `gulp clear-example`. This is not yet perfectly tethered to the actual example-app, so be very careful with this one
@@ -22,7 +22,7 @@ _Je suis là, devant toi, toujours la même_
 
 ## Features
 
-I use [Nunjucks](https://github.com/mozilla/nunjucks), [SASS](http://sass-lang.com/), and [Browserify](http://browserify.org/) to compile modularizable HTML, CSS, and JavaScript respectively. The [build process](https://github.com/JKonTiki/Francoise/blob/master/gulpfile.js) also watches files for hot reloading, lints your JS, and uses SourceMaps for accurate debugging.
+This project uses [Nunjucks](https://github.com/mozilla/nunjucks), [SASS](http://sass-lang.com/), and [Browserify](http://browserify.org/) to compile modularizable HTML, CSS, and JavaScript respectively. The [build process](https://github.com/JKonTiki/Francoise/blob/master/gulpfile.js) also watches files for hot reloading, lints your JS, and uses SourceMaps for accurate debugging.
 
 
 ### Architecture
@@ -46,11 +46,11 @@ Francoise/
 |   |   |—— scripts/               /* any common JS should live here */
 |   |   |   |—— navigator.js
 |   |   |—— styles/
-|   |   |   |—— abstracts/    /* good place SASS variables, interfaces, & other tools */
-|   |   |   |—— base/         /* any app-wide styling should live here */
+|   |   |   |—— abstracts/         /* good place SASS variables, interfaces, & other tools */
+|   |   |   |—— base/              /* any app-wide styling should live here */
 |   |   |   |—— vendor/
-|   |   |   |—— index.scss    /* our SASS entry pt, all other files should be @import'd here */
-|   |   |—— views/                  /* any common html should live here */
+|   |   |   |—— index.scss         /* our SASS entry pt, all other files should be @import'd here */
+|   |   |—— views/                 /* any common html should live here */
 |   |   |   |—— index.njk          /* this is our nunjucks index, pages should be @include 'd from here */
 |   |   |   |—— layout.njk         /* our header && footer */
 |   |—— pages/
@@ -62,17 +62,17 @@ Francoise/
 |   |   |   |—— _error-styles.scss
 |   |   |   |—— error-index.njk
 |   |   |   |—— error-scripts.js
-|—— build/             /* for production. use 'gulp deploy' to compile */
+|—— build/                         /* for production. run 'gulp build' to compile */
 |   |—— assets/
 |   |   |—— fonts/
-|   |   |—— images/    /* build process will compress images */
+|   |   |—— images/                /* build process will compress images */
 |   |—— index.html
-|   |—— scripts.js     /* this will be minified */
-|   |—— styles.css     /* ^ditto */         
+|   |—— scripts.js                 /* this will be minified */
+|   |—— styles.css                 /* ^ditto */         
 |—— .gitignore
-|—— app.js             /* our Node.js server */
+|—— app.js                         /* our Node.js server */
 |—— gulpfile.js
-|—— gulpFsTasks.js     /* moves file system logic out of gulpfile */
+|—— gulpFsTasks.js                 /* moves file system logic out of gulpfile */
 |—— LICENSE
 |—— package.json
 |—— README.md
@@ -83,7 +83,7 @@ Francoise/
 
 We can generate new components and pages from the CLI!
 
-`gulp component -g new-component-name` will do just that, and we can delete with `gulp page -d page-to-be-deleted`. Some synonym flags work too, see flags variable in gulpfile.js. If you'd like to tinker with this manually, here's the process that I go through:
+`gulp component -g new-component-name` will do just that, and we can delete with `gulp page -d page-to-be-deleted`. Some synonym flags work too, see flags variable in gulpfile.js. If you'd like to tinker with this manually, here's the process that's gone through:
 
 New Pages & Components will:
 * Generate folder with corresponding HTML, SASS, & JS indices
@@ -99,12 +99,7 @@ Deletions basically reverse engineer this process.
 
 ### Notes On JS
 
-By default, JS modules are wrapped in mount() functions. The navigator automatically imports and runs these for pages, but _component JS modules must be manually imported and mounted_. See the sample app, where `welcome-message` has its template included as a [macro](https://mozilla.github.io/nunjucks/templating.html#macro) and its JS as a node module in  `home-index.njk` & `home-scripts.js`, respectively. If its activity is just based on component-specific DOM events (or firing just wouldn't cause issues ) then there's no need for the wrapper function.
-
-
-### Server-side Opps
-
-The server is thin by default, routing to only one html file and meant more for error catching, database endpoints, etc. Routing is really meant to take place on the client-side, as this boilerplate is primarily for SPA's.
+By default, JS modules are wrapped in mount() functions. The navigator automatically imports and runs these for pages, but _component JS modules must be manually imported and mounted_. See the sample app, where `welcome-message` has its template included as a [macro](https://mozilla.github.io/nunjucks/templating.html#macro) and its JS as a node module in  `home-index.njk` & `home-scripts.js`, respectively. If its activity is just based on component-specific DOM events (or firing just wouldn't cause issues) then there's no need for the wrapper.
 
 
 ### Configuration
