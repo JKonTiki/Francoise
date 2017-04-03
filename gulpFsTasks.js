@@ -17,13 +17,19 @@ var componentTask = function(argv, flags, paths, compileForDev){
   // check flags to see if any are keys for a creation or deletion
   for (var loopingKey in argv) {
     if (flags.create.includes(loopingKey)) {
-      createKeys.push(loopingKey);
+      if (typeof argv[loopingKey] === "string") {
+        createKeys.push(loopingKey);
+      }
     }
     if (flags.delete.includes(loopingKey)) {
-      deleteKeys.push(loopingKey);
+      if (typeof argv[loopingKey] === "string") {
+        deleteKeys.push(loopingKey);
+      }
     }
   }
   if (createKeys.length < 1 && deleteKeys.length < 1) {
+    console.log("task failed, please use format:\n'gulp component -g [component-name]'\n to create a component'");
+    console.log("or \n'gulp component -d [component-name]'\n to delete a component'");
     return;
   }
   // loop through and conduct creations
@@ -83,14 +89,20 @@ var pageTask = function(argv, flags, fileNames, paths, compileForDev) {
   // check flags to see if any are keys for a creation or deletion
   for (var loopingKey in argv) {
     if (flags.create.includes(loopingKey)) {
-      createKeys.push(loopingKey);
+      if (typeof argv[loopingKey] === "string") {
+        createKeys.push(loopingKey);
+      }
     }
     if (flags.delete.includes(loopingKey)) {
-      deleteKeys.push(loopingKey);
+      if (typeof argv[loopingKey] === "string") {
+        deleteKeys.push(loopingKey);
+      }
     }
   }
   // if no relevant keys exist, break
   if (createKeys.length < 1 && deleteKeys.length < 1) {
+    console.log("task failed, please use format:\n'gulp page -g [page-name]'\n to create a page'");
+    console.log("or \n'gulp page -d [page-name]'\n to delete a page'");
     return;
   }
   // loop through and conduct creations

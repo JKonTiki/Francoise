@@ -14,7 +14,7 @@ _Je suis là, devant toi, toujours la même_
 * Download this project by running `git clone https://github.com/jkontiki/Francoise.git` from the command line or clicking [here](https://github.com/jkontiki/Francoise/master.zip)
 * Switch into the project directory `cd Francoise`
 * Run `npm install` to download dependencies
-* Launch project from the command line with `gulp` (add `-p` flag to run from build folder)
+* Launch project from the command line with `gulp` (add `--production` flag to run from build folder)
 
 
 * To clear the example-app, run `gulp clear-example`. This is not yet perfectly tethered to the actual example-app, so be very careful with this one
@@ -87,7 +87,7 @@ We can generate new components and pages from the CLI!
 
 New Pages & Components will:
 * Generate folder with corresponding HTML, SASS, & JS indices
-* Create wrappers, recommended for local scopage of new SASS & HTML code (JS can be required/imported node-style modules)
+* Create wrappers, recommended for local scopage of new HTML, SASS, and JS
 * Import new stylesheet^^ to our main SASS index at `public/general/styles/index.scss`
 
 In addition, new Pages will:
@@ -97,9 +97,11 @@ In addition, new Pages will:
 Deletions basically reverse engineer this process.
 
 
-### Notes On JS
+### Containing Modules
 
-By default, JS modules are wrapped in mount() functions. The navigator automatically imports and runs these for pages, but _component JS modules must be manually imported and mounted_. See the sample app, where `welcome-message` has its template included as a [macro](https://mozilla.github.io/nunjucks/templating.html#macro) and its JS as a node module in  `home-index.njk` & `home-scripts.js`, respectively. If its activity is just based on component-specific DOM events (or firing just wouldn't cause issues) then there's no need for the wrapper.
+By default, JS modules are wrapped in mount() functions. The navigator automatically imports and runs these for pages, but _component's must have their JS & templates manually imported and mounted_. See the sample app, where `welcome-message` has its template included as a [macro](https://mozilla.github.io/nunjucks/templating.html#macro) and its JS as a node module in  `home-index.njk` & `home-scripts.js`, respectively.
+
+If the JavaScript activity is just based on component-specific DOM events (or firing just wouldn't cause issues) then there's no need for the wrapper. SASS wrappers are likewise recommended for scoping, but not necessary. Our HTML's div wrappers are more important: they determine what constitutes a component/page, the latter bearing pertinence to the navigator.
 
 
 ### Configuration

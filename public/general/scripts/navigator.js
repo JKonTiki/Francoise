@@ -65,7 +65,7 @@
       // mount js if page is setup for that
       let pageJs = pages[pageKey].js;
       if (pageJs.mount) {
-      pageJs.mount();
+        pageJs.mount();
       }
       activePage.classList.remove('hidden');
     }

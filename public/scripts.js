@@ -34,7 +34,8 @@ exports.mount = function () {
   var imports = {
     home_js: require('./../../pages/home/home-scripts'),
     error_js: require('./../../pages/error/error-scripts'),
-    about_js: require('./../../pages/about/about-scripts')
+    about_js: require('./../../pages/about/about-scripts'),
+    test_js: require('./../../pages/test/test-scripts')
   };
   var pages = {
     home: {
@@ -51,6 +52,11 @@ exports.mount = function () {
       hash: 'about',
       divId: 'page-about',
       js: imports.about_js
+    },
+    test: {
+      hash: 'test',
+      divId: 'page-test',
+      js: imports.test_js
     }
   };
   var hash = window.location.href.split("#").splice(1).join('');
@@ -101,7 +107,7 @@ exports.mount = function () {
   document.querySelector("body").classList.remove('hidden');
 })();
 
-},{"./../../pages/about/about-scripts":4,"./../../pages/error/error-scripts":5,"./../../pages/home/home-scripts":6}],4:[function(require,module,exports){
+},{"./../../pages/about/about-scripts":4,"./../../pages/error/error-scripts":5,"./../../pages/home/home-scripts":6,"./../../pages/test/test-scripts":7}],4:[function(require,module,exports){
 (function (__filename,__dirname){
 'use strict';
 
@@ -141,6 +147,13 @@ exports.mount = function () {
 
 }).call(this,"/public/pages/home/home-scripts.js","/public/pages/home")
 
-},{"./../../components/welcome-message/welcome-message-scripts":2}]},{},[1,2,4,5,6,3])
+},{"./../../components/welcome-message/welcome-message-scripts":2}],7:[function(require,module,exports){
+"use strict";
+
+/* jshint esversion: 6 */
+
+exports.mount = function () {};
+
+},{}]},{},[1,2,4,5,6,7,3])
 
 //# sourceMappingURL=scripts.js.map
