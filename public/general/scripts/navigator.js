@@ -8,8 +8,6 @@
     home_js: require('./../../pages/home/home-scripts'),
     error_js: require('./../../pages/error/error-scripts'),
     about_js: require('./../../pages/about/about-scripts'),
-		// DEPRECATED -- test_js: require('./../../pages/test/test-scripts'),
-		about_js: require('./../../pages/about/about-scripts'),
 		//!JS_IMPORTS! (this comment is an important flag for gulp, DND!)
   };
   let pages = {
