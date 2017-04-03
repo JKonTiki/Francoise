@@ -33,7 +33,7 @@ var componentTask = function(argv, flags, paths, compileForDev){
       return;
     }
     var name = argv[createKeys[i]];
-    pathExists(`${paths.components}${name}`).then(exists =>{
+    pathExists(`${paths.components}/${name}`).then(exists =>{
       if (exists) {
         console.log(`component folder ${name} already exists!`);
       } else {
@@ -44,7 +44,7 @@ var componentTask = function(argv, flags, paths, compileForDev){
   // loop through and delete relevant material
   for (var i = 0; i < deleteKeys.length; i++) {
     var name = argv[deleteKeys[i]];
-    pathExists(`${paths.components}${name}`).then(exists =>{
+    pathExists(`${paths.components}/${name}`).then(exists =>{
       if (!exists) {
         console.log(`no component folder for "${name}" exists`);
       } else {
@@ -57,7 +57,7 @@ var componentTask = function(argv, flags, paths, compileForDev){
 
 var createComponent = function(name, paths){
   console.log(`creating component: ${name}`);
-  var fldrPath = `${paths.components}${name}`;
+  var fldrPath = `${paths.components}/${name}`;
   let type = types.component;
   exec(`mkdir ${fldrPath}`);
   exec(`touch ${fldrPath}/${name}-index.njk`);
@@ -71,7 +71,7 @@ var createComponent = function(name, paths){
 
 var deleteComponent = function(name, paths){
   console.log(`removing component: ${name}`);
-  var fldrPath = `${paths.components}${name}`;
+  var fldrPath = `${paths.components}/${name}`;
   var type = types.component;
   exec(`rm -rf ${fldrPath}`);
   removeFromStyleIndex(name, paths, type);
@@ -101,7 +101,7 @@ var pageTask = function(argv, flags, fileNames, paths, compileForDev) {
       return;
     }
     var name = argv[createKeys[i]];
-    pathExists(`${paths.pages}${name}`).then(exists =>{
+    pathExists(`${paths.pages}/${name}`).then(exists =>{
       if (exists) {
         console.log(`page folder ${name} already exists!`);
       } else {
@@ -117,7 +117,7 @@ var pageTask = function(argv, flags, fileNames, paths, compileForDev) {
       console.log("cannot auto-delete 'error' or 'home' pages. see README to manually go through process, or run 'gulp clear-example from original project clone to remove content'.");
       return;
     }
-    pathExists(`${paths.pages}${name}`).then(exists =>{
+    pathExists(`${paths.pages}/${name}`).then(exists =>{
       if (!exists) {
         console.log(`no page folder for "${name}" exists`);
       } else {
@@ -130,7 +130,7 @@ var pageTask = function(argv, flags, fileNames, paths, compileForDev) {
 }
 
 var createPage = function(name, fileNames, paths){
-  var fldrPath = `${paths.pages}${name}`;
+  var fldrPath = `${paths.pages}/${name}`;
   var type = types.page;
   exec(`mkdir ${fldrPath}`);
   exec(`touch ${fldrPath}/${name}-index.njk`);
@@ -144,7 +144,7 @@ var createPage = function(name, fileNames, paths){
 }
 
 var deletePage = function(name, fileNames, paths){
-  var fldrPath = `${paths.pages}${name}`;
+  var fldrPath = `${paths.pages}/${name}`;
   var type = types.page;
   exec(`rm -rf ${fldrPath}`);
   removeFromStyleIndex(name, paths, type);
@@ -153,7 +153,7 @@ var deletePage = function(name, fileNames, paths){
 
 var cleanExApp = function(paths, compileForDev){
   console.log('this may take a moment');
-    pathExists(`${paths.components}welcome-message`).then(exists =>{
+    pathExists(`${paths.components}/welcome-message`).then(exists =>{
     if (!exists) {
       console.log('this command is very sensitive, please only use on original clone!');
       return;
@@ -162,11 +162,11 @@ var cleanExApp = function(paths, compileForDev){
     exec('gulp component -d welcome-message').then(()=>{
       exec('gulp component -d navbar').then(()=>{
         // circumstancial clearance for usage of navbar component in layout file
-        gulp.src(paths.html.general + '/layout.njk')
+        gulp.src(paths.views.general + '/layout.njk')
           .pipe(inject.replace(`{% include "components/navbar/navbar-index.njk" %}`, ''))
           .pipe(rename('layout.njk'))
-          .pipe(gulp.dest(paths.html.general));
-        exec(`rm ${paths.root}assets/images/francoise.jpg`).then(()=>{
+          .pipe(gulp.dest(paths.views.general));
+        exec(`rm ${paths.root}/assets/images/francoise.jpg`).then(()=>{
           console.log('clearing about page');
           exec('gulp page -d about').then(()=>{
             console.log('clearing interfaces');
@@ -176,7 +176,7 @@ var cleanExApp = function(paths, compileForDev){
                 exec(`rm ${paths.styles.general}/base/_general.scss`).then(()=>{
                   exec(`touch ${paths.styles.general}/base/_general.scss`).then(()=>{
                     var name = 'home';
-                    var fldrPath = `${paths.pages}${name}`;
+                    var fldrPath = `${paths.pages}/${name}`;
                     console.log('clearing home page content');
                     exec(`rm ${fldrPath}/${name}-index.njk`).then(()=>{
                       exec(`rm ${fldrPath}/_${name}-styles.scss`).then(()=>{
@@ -186,7 +186,7 @@ var cleanExApp = function(paths, compileForDev){
                               exec(`touch ${fldrPath}/${name}-scripts.js`).then(()=>{
                                 repopulateClearedContent(fldrPath, name, paths);
                                 name = 'error';
-                                fldrPath = `${paths.pages}${name}`;
+                                fldrPath = `${paths.pages}/${name}`;
                                 console.log('clearing error page content');
                                 exec(`rm ${fldrPath}/${name}-index.njk`).then(()=>{
                                   exec(`rm ${fldrPath}/_${name}-styles.scss`).then(()=>{
@@ -294,10 +294,10 @@ var addPageNav = function(name, fileNames, paths){
     .pipe(rename(fileNames.navigator))
     .pipe(gulp.dest(paths.scripts.navigator.split(fileNames.navigator)[0]));
   // we also automatically include new page in nunjucks index
-  gulp.src(paths.html.main)
+  gulp.src(paths.views.main)
     .pipe(inject.after('<!--PAGES-->', `\n\t{% include './pages/${name}/${name}-index.njk' %}`))
     .pipe(rename("index.njk"))
-    .pipe(gulp.dest(paths.html.main.split("index.njk")[0]));
+    .pipe(gulp.dest(paths.views.main.split("index.njk")[0]));
 }
 
 removePageNav = function(name, fileNames, paths){
@@ -314,10 +314,10 @@ removePageNav = function(name, fileNames, paths){
   .pipe(rename(fileNames.navigator))
   .pipe(gulp.dest(paths.scripts.navigator.split(fileNames.navigator)[0]));
   // delete page's html inclusion in nunjucks index
-  gulp.src(paths.html.main)
+  gulp.src(paths.views.main)
   .pipe(inject.replace(`\n\t{% include './pages/${name}/${name}-index.njk' %}`, ''))
   .pipe(rename("index.njk"))
-  .pipe(gulp.dest(paths.html.main.split("index.njk")[0]));
+  .pipe(gulp.dest(paths.views.main.split("index.njk")[0]));
 }
 
 exports.cleanExApp = cleanExApp;

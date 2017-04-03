@@ -3,8 +3,6 @@ node_modules
 .DS_Store
 build
 tmp
-public/views/**/index.html
-public/views/**/styles.css
 public/scripts.js
 public/scripts.js.map
 public/index.html

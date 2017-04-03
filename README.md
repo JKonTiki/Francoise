@@ -43,9 +43,6 @@ Francoise/
 |   |   |   |—— navbar-index.njk
 |   |   |   |—— navbar-scripts.js
 |   |—— general/
-|   |   |—— html/                  /* any common html should live here */
-|   |   |   |—— index.njk          /* this is our nunjucks index, pages should be @include 'd from here */
-|   |   |   |—— layout.njk         /* our header && footer */
 |   |   |—— scripts/               /* any common JS should live here */
 |   |   |   |—— navigator.js
 |   |   |—— styles/
@@ -53,6 +50,9 @@ Francoise/
 |   |   |   |—— base/         /* any app-wide styling should live here */
 |   |   |   |—— vendor/
 |   |   |   |—— index.scss    /* our SASS entry pt, all other files should be @import'd here */
+|   |   |—— views/                  /* any common html should live here */
+|   |   |   |—— index.njk          /* this is our nunjucks index, pages should be @include 'd from here */
+|   |   |   |—— layout.njk         /* our header && footer */
 |   |—— pages/
 |   |   |—— home/
 |   |   |   |—— _home-styles.scss
@@ -68,8 +68,7 @@ Francoise/
 |   |   |—— images/    /* build process will compress images */
 |   |—— index.html
 |   |—— scripts.js     /* this will be minified */
-|   |—— styles.css     /* ^ditto */
-|—— Views/             
+|   |—— styles.css     /* ^ditto */         
 |—— .gitignore
 |—— app.js             /* our Node.js server */
 |—— gulpfile.js
@@ -100,12 +99,12 @@ Deletions basically reverse engineer this process.
 
 ### Notes On JS
 
-By default, JS modules are wrapped in mount() functions. The navigator automatically imports and runs these for pages, but _component JS modules must be manually imported and mounted_. See the sample app, where `welcome-message` has its template included as a [macro](https://mozilla.github.io/nunjucks/templating.html#macro) and its JS as a node module in our `home` page's .njk & .js files, respectively. You can also remove the wrapper function or have it fire anonymously if its activity is based on component-specific DOM events or just doesn't express brashness.
+By default, JS modules are wrapped in mount() functions. The navigator automatically imports and runs these for pages, but _component JS modules must be manually imported and mounted_. See the sample app, where `welcome-message` has its template included as a [macro](https://mozilla.github.io/nunjucks/templating.html#macro) and its JS as a node module in  `home-index.njk` & `home-scripts.js`, respectively. If its activity is just based on component-specific DOM events (or firing just wouldn't cause issues ) then there's no need for the wrapper function.
 
 
 ### Server-side Opps
 
-The server is thin by default, routing to only one view and meant more for error catching, database endpoints, etc. Routing is really meant to take place on the client-side, as this boilerplate is primarily for SPA's.
+The server is thin by default, routing to only one html file and meant more for error catching, database endpoints, etc. Routing is really meant to take place on the client-side, as this boilerplate is primarily for SPA's.
 
 
 ### Configuration

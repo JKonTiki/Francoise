@@ -49,10 +49,10 @@ var flags = {
 }
 
 var paths = {
-  root: "public/",
+  root: "public",
   images: {
     origin:'public/assets/images/*',
-    dest:'build/assets/images/',
+    dest:'build/assets/images',
   },
   fonts: {
     origin:'public/assets/fonts/*',
@@ -70,19 +70,19 @@ var paths = {
     index: 'public/' + fileNames.styles,
     main: 'public/general/styles/index.scss',
   },
-  html: {
+  views: {
     all: ['public/pages/**/*.html', 'public/components/**/*.html','public/**/*.njk'],
-    general: 'public/general/html',
+    general: 'public/general/views',
     index: 'public/' + fileNames.html,
-    main: 'public/general/html/index.njk',
+    main: 'public/general/views/index.njk',
   },
   build: {
-    root: 'build/',
-    scripts: 'build/',
-    styles: 'build/',
+    root: 'build',
+    scripts: 'build',
+    styles: 'build',
   },
-  pages: 'public/pages/',
-  components: 'public/components/',
+  pages: 'public/pages',
+  components: 'public/components',
 };
 
 var commands = {
@@ -126,7 +126,7 @@ gulp.task('default',
     gulp.watch(paths.scripts.all, [commands.compile.scripts]);
     gulp.watch(paths.styles.all, [commands.compile.styles]);
     gulp.watch(paths.images.origin, [commands.images]);
-    gulp.watch(paths.html.all, [commands.compile.html, commands.htmlReload]);
+    gulp.watch(paths.views.all, [commands.compile.html, commands.htmlReload]);
 });
 
 //this is our deployment task, it will set everything for deployment-ready files
@@ -269,7 +269,7 @@ gulp.task(commands.deploy.styles, function() {
 //basically just keeping an eye on all HTML files
 gulp.task(commands.htmlReload, function() {
     //watch any and all HTML files and refresh when something changes
-    return gulp.src(paths.html.all)
+    return gulp.src(paths.views.all)
         .pipe(plumber())
         .pipe(browserSync.reload({stream: true}))
         //catch errors
@@ -278,7 +278,7 @@ gulp.task(commands.htmlReload, function() {
 
 gulp.task(commands.compile.html, function() {
   // Gets .html and .njk files in pages
-  return gulp.src(paths.html.main)
+  return gulp.src(paths.views.main)
   // Renders template with nunjucks
   .pipe(nunjucksRender({
       path: [paths.root]
@@ -290,7 +290,7 @@ gulp.task(commands.compile.html, function() {
 //migrating over all HTML files for deployment
 gulp.task(commands.deploy.html, function() {
     //grab html index file
-    gulp.src(paths.html.index)
+    gulp.src(paths.views.index)
         //prevent pipe breaking caused by errors from gulp plugins
         .pipe(plumber())
         .pipe(gulp.dest(paths.build.root));
@@ -329,7 +329,7 @@ gulp.task(commands.deploy.fonts, function() {
 gulp.task(commands.clean, function() {
   exec('rm -rf build')
     .catch(function(err){ });
-  exec('rm ' + paths.html.index)
+  exec('rm ' + paths.views.index)
     .catch(function(err){ });
   exec('rm ' + paths.scripts.index)
     .catch(function(err){ });
