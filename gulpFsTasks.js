@@ -274,8 +274,14 @@ var addDivWrapper = function(fldrPath, name, type){
 }
 
 var addStylesWrapper = function(fldrPath, name, type){
+  var elementType;
+  if (type === types.component) {
+    elementType = ".";
+  } else if (type === types.page) {
+    elementType = "#";
+  }
   gulp.src(`${fldrPath}/_${name}-styles.scss`)
-    .pipe(inject.prepend(`// use this wrapper to preserve scope!\n#${type}-${name} {\n`))
+    .pipe(inject.prepend(`// use this wrapper to preserve scope!\n${elementType}${type}-${name} {\n`))
     .pipe(inject.append(`\n}`))
     .pipe(rename(`_${name}-styles.scss`))
     .pipe(gulp.dest(`${fldrPath}/`));

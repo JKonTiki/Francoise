@@ -23,6 +23,12 @@ app.get('/', function(req, res){
 })
 
 // run server
-app.listen(port, function(){
-  console.log(`Server launched on port ${port}`);
-})
+if (port) {
+  app.listen(port, function(){
+    console.log(`Server launched on port ${port}`);
+  });
+} else {
+  app.listen(3000, function(){
+    console.log(`Server launched on port 3000`);
+  });
+}
